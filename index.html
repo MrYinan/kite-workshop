@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纸鸢非遗 · 鸢时漫记 — 一纸鸢，一线牵</title>
+    <!-- Tailwind · 轻量实用框架 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 · 丰富图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 思源宋体 · 典雅方正，契合非遗气质 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 自定义配置：保留原有色系，新增云纹装饰变量 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kite-beige': '#F5F0E8', // 米纸色 · 基底
+                        'kite-green': '#4A7B60', // 青竹绿 · 主色
+                        'kite-brown': '#8C6A48', // 赭石棕 · 点缀
+                        'kite-light': '#E8DCC8', // 浅卡其 · 辅助
+                        'kite-gold': '#B79A6E',  // 新增：暖金，用于装饰线条
+                    },
+                    fontFamily: {
+                        'chinese': ['"Noto Serif SC"', 'STSong', 'SimSun', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 稳定、兼容的自定义样式 (重写@apply为原生CSS，确保所有效果可见) -->
+    <style>
+        /* 全局字体与基础 */
+        body { font-family: 'Noto Serif SC', STSong, SimSun, serif; color: #4a3b2c; }
+        /* 背景图区：保持自然伸展，加柔和遮罩层提升文字可读性 */
+        .bg-kite-pattern {
+            position: relative;
+            background-image: url('./static/images/index/index.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+        .bg-kite-pattern::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);  /* 半透明深色遮罩，让文字更醒目 */
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* 让英雄区内容位于遮罩上方 */
+        .hero-content { position: relative; z-index: 5; }
+        /* 导航栏保持在遮罩上方 */
+        header { position: relative; z-index: 20; }
+
+        /* 功能按钮卡片样式 (原.btn-kite美化增强) */
+        .btn-kite {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem 1rem; /* 相当于px-6 py-6 */
+            border-radius: 1rem; /* rounded-xl */
+            background: linear-gradient(145deg, #4A7B60 0%, #8C6A48 100%);
+            color: white;
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 500;
+            box-shadow: 0 10px 20px -8px rgba(74, 123, 96, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(2px);
+            overflow: hidden;
+        }
+        .btn-kite i { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .btn-kite span:first-of-type { font-weight: 600; letter-spacing: 1px; }
+        .btn-kite .absolute { position: absolute; bottom: 0.5rem; left: 0; right: 0; font-size: 0.7rem; opacity: 0.8; }
+        .btn-kite:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 30px -10px rgba(74, 123, 96, 0.5);
+            background: linear-gradient(145deg, #3f6b52, #7a5c3f);
+        }
+        .btn-kite:active { transform: scale(0.98); }
+
+        /* 卡片样式 (原.card-kite) 增加纸感 */
+        .card-kite {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(140, 106, 72, 0.12);
+            padding: 1.5rem;
+            transition: all 0.25s;
+            border: 1px solid rgba(245, 240, 232, 0.8);
+            font-family: 'Noto Serif SC', serif;
+        }
+        .card-kite:hover {
+            box-shadow: 0 16px 32px rgba(74, 123, 96, 0.18);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 主要按钮 (原.btn-primary-kite) 更精致 */
+        .btn-primary-kite {
+            position: relative;
+            padding: 0.85rem 2.5rem;
+            border-radius: 2rem;
+            background: linear-gradient(120deg, #4A7B60, #8C6A48);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 245, 235, 0.4);
+            box-shadow: 0 8px 18px -6px rgba(74, 123, 96, 0.5);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(4px);
+            letter-spacing: 1px;
+        }
+        .btn-primary-kite:hover {
+            background: linear-gradient(120deg, #3f6b52, #7a5c3f);
+            box-shadow: 0 12px 26px -8px #3f6b52;
+            transform: translateY(-2px);
+        }
+        .btn-primary-kite:active { transform: translateY(2px); }
+
+        /* 次要按钮 (原.btn-secondary-kite) */
+        .btn-secondary-kite {
+            position: relative;
+            padding: 0.85rem 2.5rem;
+            border-radius: 2rem;
+            background: rgba(245, 240, 232, 0.5);
+            backdrop-filter: blur(4px);
+            color: #5f4a33;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border: 1px solid #8C6A48;
+            box-shadow: 0 4px 12px rgba(140, 106, 72, 0.2);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-secondary-kite:hover {
+            background: #8C6A48;
+            color: white;
+            border-color: #8C6A48;
+            box-shadow: 0 8px 20px rgba(140, 106, 72, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-secondary-kite:active { transform: translateY(2px); }
+
+        /* 输入框统一风格 (原.input-kite) */
+        .input-kite {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #E8DCC8;
+            font-family: 'Noto Serif SC', serif;
+            transition: border 0.2s;
+        }
+        .input-kite:focus {
+            border-color: #4A7B60;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 123, 96, 0.2);
+        }
+
+        /* 装饰性云纹分隔线 (新增) */
+        .divider-wave {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath fill='%234A7B60' fill-opacity='0.1' d='M0,64L80,58.7C160,53,320,43,480,48C640,53,800,75,960,80C1120,85,1280,75,1360,69.3L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            height: 30px;
+            width: 100%;
+        }
+
+        /* 箭头弹跳动画 */
+        .animate-arrow-bounce {
+            animation: bounce 1.8s infinite ease-in-out;
+        }
+        @keyframes bounce { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(6px); } }
+
+        /* 图片悬停微动 */
+        .hover-zoom img { transition: transform 0.5s; }
+        .hover-zoom:hover img { transform: scale(1.02); }
+        
+        /* 新增：非遗标签样式，固定在导航上方 */
+        .heritage-tag {
+            position: absolute;
+            top: 20px; /* 调整这个值控制标签与导航的距离 */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25; /* 确保在导航上方 */
+        }
+    </style>
+</head>
+<body class="bg-kite-beige text-kite-brown m-0 p-0 antialiased">
+
+    <!-- 英雄区：背景图 + 导航 + 标题组 (重构为清晰层次) -->
+    <section id="home" class="relative min-h-screen w-full bg-kite-pattern flex flex-col">
+        <!-- 新增：非遗标签，放在导航上方 -->
+        <div class="heritage-tag">
+            <span class="inline-block px-4 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white/90 border border-white/30 text-sm tracking-wider">国家级非物质文化遗产 · 纸鸢技艺</span>
+        </div>
+        
+        <!-- 导航栏 (与原来一致，保留移动端逻辑) -->
+        <header class="relative z-20 py-8 bg-gradient-to-b from-black/5 to-transparent"> <!-- 修改py-4为py-8，给标签留出空间 -->
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 text-white drop-shadow-md">
+                    <i class="fa-solid fa-kite text-3xl text-kite-light"></i>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white">鸢时漫记</h1>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex gap-8 text-lg font-medium text-white drop-shadow">
+                        <li><a href="#home" class="hover:text-kite-light transition-colors border-b-2 border-transparent hover:border-kite-light pb-1">首页</a></li>
+                        <li><a href="#about" class="hover:text-kite-light transition-colors border-b-2 border-transparent hover:border-kite-light pb-1">关于我们</a></li>
+                        <li><a href="pages/contact.html" class="hover:text-kite-light transition-colors border-b-2 border-transparent hover:border-kite-light pb-1">联系我们</a></li>
+                    </ul>
+                </nav>
+                <!-- 移动端按钮 -->
+                <button class="md:hidden text-2xl text-white" id="mobileMenuBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="fixed top-16 left-0 right-0 bg-kite-beige/95 backdrop-blur-md shadow-md py-4 hidden md:hidden z-30" id="mobileMenu">
+                    <ul class="flex flex-col gap-4 text-lg px-6 text-kite-brown">
+                        <li><a href="#home" class="hover:text-kite-green transition-colors">首页</a></li>
+                        <li><a href="#about" class="hover:text-kite-green transition-colors">关于我们</a></li>
+                        <li><a href="pages/contact.html" class="hover:text-kite-green transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- 英雄区核心内容：标题 + 按钮 (居中，位于遮罩之上) 修改pt值让按钮下移 -->
+        <div class="hero-content flex-1 flex flex-col items-center justify-center text-center px-4 gap-8 md:gap-10 pt-40 md:pt-52"> <!-- 修改pt-20为pt-40，md:pt-32为md:pt-52 -->
+            <div class="flex flex-col sm:flex-row gap-5 pt-8"> <!-- 新增pt-8，让按钮进一步下移 -->
+                <a href="#function-buttons" class="btn-primary-kite"><i class="fa-solid fa-feather-pointed"></i> 探索纸鸢之美</a>
+                <a href="#about" class="btn-secondary-kite"><i class="fa-regular fa-compass"></i> 了解更多</a>
+            </div>
+        </div>
+
+        <!-- 向下滚动提示 (链接到功能区域) -->
+        <a href="#function-buttons" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white flex flex-col items-center gap-1 z-10 group">
+            <span class="text-sm tracking-widest drop-shadow">向下滚动</span>
+            <i class="fa-solid fa-circle-arrow-down text-2xl animate-arrow-bounce group-hover:text-kite-light transition"></i>
+        </a>
+    </section>
+
+    <!-- 核心功能按钮区 (纸鸢雅集) 保留原有五个入口，美化卡片 -->
+    <section id="function-buttons" class="py-20 px-4 container mx-auto bg-kite-beige">
+        <div class="text-center mb-16">
+            <span class="text-kite-green font-semibold tracking-widest text-sm">· 鸢 时 雅 集 ·</span>
+            <h3 class="text-4xl md:text-5xl font-bold mb-4 text-kite-brown mt-2">纸鸢五艺</h3>
+            <div class="w-24 h-1 bg-kite-green/60 mx-auto mb-6"></div>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto font-light">
+                从知到行，从赏到创，全方位感受纸鸢非遗的魅力
+            </p>
+        </div>
+
+        <!-- 五个功能卡片 (沿用btn-kite类，但重写样式后更加精致) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-5">
+            <!-- 读书 -->
+            <a href="pages/read.html" class="btn-kite group">
+                <i class="fa-solid fa-book-open text-4xl mb-3 group-hover:scale-110 transition"></i>
+                <span>读书</span>
+                <span class="absolute bottom-2 text-xs opacity-80 tracking-wider">知纸鸢源流</span>
+            </a>
+            <!-- 览物 -->
+            <a href="pages/view.html" class="btn-kite group">
+                <i class="fa-solid fa-images text-4xl mb-3 group-hover:scale-110 transition"></i>
+                <span>览物</span>
+                <span class="absolute bottom-2 text-xs opacity-80">赏鸢艺珍品</span>
+            </a>
+            <!-- 学艺 -->
+            <a href="pages/learn.html" class="btn-kite group">
+                <i class="fa-solid fa-hand-sparkles text-4xl mb-3 group-hover:scale-110 transition"></i>
+                <span>学艺</span>
+                <span class="absolute bottom-2 text-xs opacity-80">学扎鸢技艺</span>
+            </a>
+            <!-- 购物 -->
+            <a href="pages/shop.html" class="btn-kite group">
+                <i class="fa-solid fa-cart-shopping text-4xl mb-3 group-hover:scale-110 transition"></i>
+                <span>购物</span>
+                <span class="absolute bottom-2 text-xs opacity-80">购鸢品好物</span>
+            </a>
+            <!-- 踏青 -->
+            <a href="pages/outing.html" class="btn-kite group">
+                <i class="fa-solid fa-tree-city text-4xl mb-3 group-hover:scale-110 transition"></i>
+                <span>踏青</span>
+                <span class="absolute bottom-2 text-xs opacity-80">享放鸢之乐</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 非遗特色展示区 (重构图片网格与故事卡片，增强文人气息) -->
+    <section class="py-20 px-4 bg-gradient-to-b from-kite-light/30 to-kite-beige">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- 左侧文字卡片 (更丰富的排版) -->
+                <div class="card-kite space-y-4 border-l-8 border-kite-green/30">
+                    <h4 class="text-3xl font-bold text-kite-green flex items-center gap-2"><i class="fa-solid fa-feather text-2xl"></i>纸鸢的非遗故事</h4>
+                    <p class="leading-relaxed text-gray-700 first-letter:text-5xl first-letter:text-kite-brown first-letter:font-serif first-letter:float-left first-letter:mr-3 first-letter:mt-1">
+                        纸鸢，俗称风筝，作为中国非物质文化遗产的璀璨瑰宝，其历史可追溯至两千余年前的春秋战国时期。据《韩非子·外储说》记载，墨翟「斫木为鸢，三年而成，飞一日而败」，这是关于鸢类造物最早的文字记录；而后鲁班效仿墨翟，以竹为骨，制出能「三日不下」的木鸢，成为纸鸢最初的雏形。
+                    </p>
+                    <p class="leading-relaxed text-gray-700">
+                        作为非遗技艺，纸鸢制作凝结着「扎、糊、绘、放」四大核心工艺：「扎」是骨架搭建，需精准把控竹条的粗细、弧度，决定纸鸢的飞行姿态；「糊」是裱纸塑形，讲究纸与骨的贴合度，薄而不裂、轻而不飘；「绘」是点睛之笔，山水、花鸟、瑞兽等纹样皆蕴含东方美学；「放」则需懂风知势，让纸鸢与自然相融。
+                    </p>
+                    <p class="leading-relaxed text-gray-700">
+                        如今，纸鸢早已超越「玩具」的定义，成为连接古今的文化纽带。我们坚守非遗技艺的活态传承，既保留传统工艺的精髓，又融入现代设计理念，让这门千年技艺在新时代焕发生机，让更多人触摸到纸鸢背后的文化温度，感受东方美学的独特魅力。每一只纸鸢都承载着匠人的心血与祝福，承载着中国人对天空的向往，也让传统文化在春风里代代相传、生生不息。
+                    </p>
+                </div>
+
+                <!-- 右侧图片网格 (增加相框效果和悬停) -->
+                <div class="grid grid-cols-2 gap-5">
+                    <div class="rounded-xl overflow-hidden shadow-lg hover-zoom transition-all duration-300 border-4 border-white/60">
+                        <img src="static/images/index/1.png" alt="传统沙燕纸鸢" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden shadow-lg hover-zoom transition-all duration-300 border-4 border-white/60">
+                        <img src="static/images/index/2.png" alt="彩绘纸鸢细节" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden shadow-lg hover-zoom transition-all duration-300 border-4 border-white/60">
+                        <img src="static/images/index/3.png" alt="手工扎制纸鸢骨架" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden shadow-lg hover-zoom transition-all duration-300 border-4 border-white/60">
+                        <img src="static/images/index/4.png" alt="春日放纸鸢" class="w-full h-56 object-cover">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 经典语录卡片 (加宽、突出) -->
+            <div class="mt-16 text-center card-kite max-w-4xl mx-auto bg-white/80 py-10">
+                <i class="fa-solid fa-quote-left text-5xl text-kite-green/50 mb-5"></i>
+                <p class="text-2xl md:text-3xl italic font-light text-kite-brown px-4">“一线纸鸢，牵起的是千年的文化脉络；一手匠心，传承的是不灭的东方美学。”</p>
+                <p class="text-gray-500 mt-6 tracking-widest">—— 纸鸢非遗传承团队 · 守艺人</p>
+                <!-- 小风筝装饰 -->
+                <div class="flex justify-center gap-2 mt-4 text-kite-green/40">
+                    <i class="fa-solid fa-kaaba"></i> <i class="fa-solid fa-wind"></i> <i class="fa-solid fa-kaaba"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们区块 (三个卡片加动态小图标) -->
+    <section id="about" class="py-20 px-4 container mx-auto">
+        <div class="text-center mb-16">
+            <span class="text-kite-brown/70 text-sm tracking-[0.3em]">· 鸢 人 ·</span>
+            <h3 class="text-4xl md:text-5xl font-bold mb-3 text-kite-brown">关于我们</h3>
+            <div class="w-20 h-1 bg-kite-green mx-auto mb-5"></div>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                以鸢为媒，以艺为桥，让非遗文化走进生活
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- 团队卡片 -->
+            <div class="card-kite text-center hover:scale-[1.02] transition-transform group">
+                <div class="w-20 h-20 bg-kite-green/10 rounded-full flex items-center justify-center mx-auto mb-5 group-hover:bg-kite-green/20 transition-colors">
+                    <i class="fa-solid fa-users text-4xl text-kite-green"></i>
+                </div>
+                <h4 class="text-2xl font-bold mb-3 text-kite-brown">我们的团队</h4>
+                <p class="text-gray-600">由非遗传承人、传统工艺匠人、文化传播者组成的专业团队，深耕纸鸢文化传承与创新十余年。</p>
+            </div>
+            <!-- 使命卡片 -->
+            <div class="card-kite text-center hover:scale-[1.02] transition-transform group">
+                <div class="w-20 h-20 bg-kite-green/10 rounded-full flex items-center justify-center mx-auto mb-5 group-hover:bg-kite-green/20">
+                    <i class="fa-solid fa-lightbulb text-4xl text-kite-green"></i>
+                </div>
+                <h4 class="text-2xl font-bold mb-3 text-kite-brown">我们的使命</h4>
+                <p class="text-gray-600">保护纸鸢非遗技艺，创新文化传播形式，让更多人感受传统手工艺的温度与魅力。</p>
+            </div>
+            <!-- 愿景卡片 -->
+            <div class="card-kite text-center hover:scale-[1.02] transition-transform group">
+                <div class="w-20 h-20 bg-kite-green/10 rounded-full flex items-center justify-center mx-auto mb-5 group-hover:bg-kite-green/20">
+                    <i class="fa-solid fa-rocket text-4xl text-kite-green"></i>
+                </div>
+                <h4 class="text-2xl font-bold mb-3 text-kite-brown">发展愿景</h4>
+                <p class="text-gray-600">打造纸鸢文化生态，连接传统与现代，让纸鸢成为东方美学的鲜活符号。</p>
+            </div>
+        </div>
+
+        <!-- 手工印记小标语 -->
+        <div class="mt-16 text-center text-sm text-kite-green/60 flex justify-center items-center gap-2">
+            <span class="w-12 h-px bg-kite-green/30"></span> 匠心扎糊绘 · 一鸢传千年 <span class="w-12 h-px bg-kite-green/30"></span>
+        </div>
+    </section>
+
+    <!-- 页脚 (保留原有信息，添加云纹装饰) -->
+    <footer class="bg-kite-brown text-white pt-12 pb-6 px-4 relative">
+        <!-- 装饰波纹 -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden rotate-180">
+            <div class="divider-wave"></div>
+        </div>
+        <div class="container mx-auto text-center relative z-10">
+            <div class="mb-6">
+                <i class="fa-solid fa-kite text-4xl mb-3 text-kite-light"></i>
+                <p class="text-2xl font-light tracking-widest">鸢时漫记</p>
+                <p class="text-sm opacity-80 mt-1">纸鸢非遗传承 · 守正创新</p>
+            </div>
+            <div class="flex justify-center gap-5 text-2xl mb-5">
+                <a href="#" class="hover:text-kite-light transition"><i class="fa-brands fa-weixin"></i></a>
+                <a href="#" class="hover:text-kite-light transition"><i class="fa-brands fa-weibo"></i></a>
+                <a href="#" class="hover:text-kite-light transition"><i class="fa-regular fa-message"></i></a>
+            </div>
+            <p class="text-sm opacity-80">纸鸢非遗传承 © 2026 版权所有 · 一纸鸢，一线牵</p>
+            <p class="text-xs opacity-60 mt-4">保护非遗 · 传承文化 · 共享美好</p>
+        </div>
+    </footer>
+
+    <!-- 交互脚本 (平滑滚动 + 移动菜单) -->
+    <script>
+        (function() {
+            // 平滑锚点滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // 移动菜单自动隐藏
+                        document.getElementById('mobileMenu')?.classList.add('hidden');
+                    }
+                });
+            });
+
+            // 移动端菜单切换
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('hidden');
+                });
+                // 点击菜单外区域关闭（简单处理：点击文档任意处关闭，但阻止冒泡）
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鸢承古今 - 潍坊风筝非遗馆</title>
+  <style>
+    /* ========== 全局基础样式 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #F5F0E6;
+      background-image: linear-gradient(rgba(140, 109, 72, 0.03) 1px, transparent 1px);
+      color: #232323;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      padding: 0;
+    }
+
+    /* ========== 顶部视频区域（占满屏幕，完整展示） ========== */
+    .video-section {
+      width: 100vw; /* 占满整个视口宽度 */
+      aspect-ratio: 16 / 9; /* 保持视频16:9比例，完整展示 */
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .video-content {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* 视频完整显示，不裁剪 */
+      background-color: #000; /* 视频黑边填充 */
+    }
+    .video-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mask-text {
+      color: #F5F0E6;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(0,0,0,0.6);
+      letter-spacing: 2px;
+    }
+
+    /* ========== 功能区（占满屏幕，按钮撑满容器） ========== */
+    .func-section {
+      width: 100vw; /* 占满整个视口宽度 */
+      background-color: rgba(245, 240, 230, 0.9);
+      padding: 30px 20px; /* 仅保留左右20px内边距避免贴边 */
+      border-top: 1px solid rgba(140, 109, 72, 0.1);
+    }
+    .func-title {
+      font-size: 18px;
+      color: #8C6D48;
+      margin-bottom: 25px;
+      padding-left: 15px;
+      border-left: 3px solid #8C6D48;
+    }
+    /* 三行两列布局，按钮撑满容器 */
+    .func-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 固定两列 */
+      grid-template-rows: repeat(3, 1fr); /* 固定三行 */
+      gap: 20px; /* 按钮间距 */
+      height: auto;
+    }
+    /* 功能按钮卡片（撑满单元格） */
+    .func-card {
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(140, 109, 72, 0.1);
+      background-color: #fff;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    /* 空占位也保持相同样式 */
+    .func-card-empty {
+      border-radius: 10px;
+      border: 1px solid rgba(140, 109, 72, 0.1);
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .func-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(140, 109, 72, 0.15);
+    }
+    .func-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 图片撑满按钮容器 */
+      display: block;
+    }
+
+    /* ========== 响应式适配 ========== */
+    @media (max-width: 768px) {
+      .func-grid {
+        grid-template-columns: 1fr; /* 手机端单列 */
+        grid-template-rows: repeat(5, 1fr); /* 五行 */
+      }
+      .func-card-empty {
+        display: none; /* 手机端隐藏占位 */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部视频区域 -->
+  <section class="video-section" onclick="toKiteScenery()">
+    <video
+      src="./static/videos/fengqi_doc.mp4"
+      autoplay
+      loop
+      muted
+      controls="false"
+      class="video-content"
+    ></video>
+    <div class="video-mask">
+      <span class="mask-text">飞鸢百景 · 数字展馆</span>
+    </div>
+  </section>
+
+  <!-- 功能区（按钮撑满容器） -->
+  <section class="func-section">
+    <h2 class="func-title">非遗体验</h2>
+    <div class="func-grid">
+      <!-- 第一行 -->
+      <div class="func-card" onclick="toRead()">
+        <img src="./static/images/index/read.png" class="func-img" alt="读书">
+      </div>
+      <div class="func-card" onclick="toView()">
+        <img src="./static/images/index/view.png" class="func-img" alt="览物">
+      </div>
+      <!-- 第二行 -->
+      <div class="func-card" onclick="toLearn()">
+        <img src="./static/images/index/learn.png" class="func-img" alt="学艺">
+      </div>
+      <div class="func-card" onclick="toShop()">
+        <img src="./static/images/index/shop.png" class="func-img" alt="购物">
+      </div>
+      <!-- 第三行 -->
+      <div class="func-card" onclick="toOuting()">
+        <img src="./static/images/index/outing.png" class="func-img" alt="踏青">
+      </div>
+      <div class="func-card-empty"></div> <!-- 占位保持布局 -->
+    </div>
+  </section>
+
+  <script>
+    // 页面加载完成
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('页面加载完成');
+    });
+
+// 路由跳转函数（适配实际文件路径）
+function navigateTo(pageName) {
+  // 跳转到pages文件夹下对应的页面
+  window.location.href = `pages/${pageName}.html`;
+}
+
+
+    // 跳转函数（简化写法，直接传页面名）
+function toKiteScenery() { navigateTo('kiteScenery'); } // 对应pages/kiteScenery.html
+function toRead() { navigateTo('read'); }               // 对应pages/read.html
+function toView() { navigateTo('view'); }               // 对应pages/view.html
+function toLearn() { navigateTo('learn'); }             // 对应pages/learn.html
+function toShop() { navigateTo('shop'); }               // 对应pages/shop.html
+function toOuting() { navigateTo('outing'); }           // 对应pages/outing.html
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>览物 · 风起鸢都 | 纸鸢非遗</title>
+  <!-- Tailwind + Font Awesome + 思源宋体（与首页统一） -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 自定义扩展：颜色变量与首页统一，增加装饰性纹理 */
+    body {
+      font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+      background-color: #F5F0E8; /* kite-beige */
+      color: #4a3b2c;
+    }
+    .bg-kite-paper {
+      background-color: #F5F0E8;
+      background-image: radial-gradient(circle at 25% 30%, rgba(140, 106, 72, 0.03) 2px, transparent 2px),
+                        radial-gradient(circle at 75% 70%, rgba(74, 123, 96, 0.03) 3px, transparent 3px);
+      background-size: 60px 60px;
+    }
+    .card-kite {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 28px -6px rgba(140, 106, 72, 0.2);
+      border: 1px solid rgba(232, 220, 200, 0.6);
+    }
+    .card-kite:hover {
+      box-shadow: 0 16px 32px -8px rgba(74, 123, 96, 0.25);
+      border-color: #4A7B60;
+    }
+    .title-underline {
+      position: relative;
+      display: inline-block;
+    }
+    .title-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: #8C6A48;
+      border-radius: 1px;
+    }
+    .chapter-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: rgba(74, 123, 96, 0.15);
+      border-radius: 50%;
+      color: #4A7B60;
+    }
+    .video-wrapper {
+      position: relative;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 16px 32px -12px rgba(0,0,0,0.2);
+    }
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-kite-paper min-h-screen">
+
+  <!-- 导航栏（毛玻璃，返回按钮+居中标题） -->
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-kite-light/30 py-3 px-4 md:px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <button onclick="goBack()" class="flex items-center gap-2 text-kite-brown hover:text-kite-green transition-colors group">
+        <i class="fa-solid fa-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+        <span class="font-medium hidden sm:inline">返回</span>
+      </button>
+      <h1 class="text-xl md:text-2xl font-bold text-kite-green absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
+        <i class="fa-solid fa-kite text-kite-brown mr-2"></i>览物 · 风起鸢都
+      </h1>
+      <div class="w-20 invisible"></div> <!-- 占位保持平衡 -->
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+
+    <!-- 视频展示区（大卡片） -->
+    <div class="card-kite p-4 md:p-6 mb-10">
+      <div class="text-center mb-4">
+        <span class="inline-block px-4 py-1 bg-white/60 rounded-full text-kite-green text-sm tracking-wider">微纪录片</span>
+      </div>
+      <div class="video-wrapper">
+        <video 
+          src="../static/videos/fengqi_doc.mp4"
+          poster="../static/videos/fengqi-poster.png"
+          controls
+          class="w-full h-full object-contain bg-black/5"
+          preload="metadata"
+        >
+          <div class="absolute inset-0 flex items-center justify-center bg-white/80 text-kite-brown">
+            您的浏览器不支持视频播放
+          </div>
+        </video>
+      </div>
+      <p class="text-center text-kite-brown/80 mt-4 text-sm md:text-base">
+        —— 在云端书写传承与创新的时代答卷 ——
+      </p>
+    </div>
+
+    <!-- 影片章节介绍（五个卡片，带图标和首行缩进） -->
+    <div class="text-center mb-8">
+      <h2 class="title-underline text-2xl md:text-3xl font-bold text-kite-green mb-2">故事脉络</h2>
+      <p class="text-kite-brown/70">五个篇章 · 层层展开非遗画卷</p>
+    </div>
+
+    <div class="space-y-5">
+      <!-- 开篇 -->
+      <div class="card-kite p-5 md:p-6 hover:scale-[1.01] transition-transform">
+        <div class="flex items-start gap-4">
+          <span class="chapter-icon flex-shrink-0 mt-1"><i class="fa-solid fa-wind"></i></span>
+          <div class="flex-1">
+            <h3 class="text-xl md:text-2xl font-semibold text-kite-green mb-2 flex items-center gap-2">
+              <span class="w-8 h-px bg-kite-green/40"></span>开篇：风筝之舞
+            </h3>
+            <p class="text-kite-brown/90 text-base leading-relaxed text-indent">
+              影片以群鸢在潍坊天空升腾、盘旋的画面拉开序幕，展开了这项千年技艺的当代叙事。开篇不仅捕捉了风筝竞飞的视觉震撼，更隐喻着古老非遗在时代风潮中生生不息的内在脉搏，为全片定下了"在传承中创新"的深沉基调。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 传承 -->
+      <div class="card-kite p-5 md:p-6 hover:scale-[1.01] transition-transform">
+        <div class="flex items-start gap-4">
+          <span class="chapter-icon flex-shrink-0 mt-1"><i class="fa-solid fa-hand-sparkles"></i></span>
+          <div class="flex-1">
+            <h3 class="text-xl md:text-2xl font-semibold text-kite-green mb-2 flex items-center gap-2">
+              <span class="w-8 h-px bg-kite-green/40"></span>传承：匠心对话
+            </h3>
+            <p class="text-kite-brown/90 text-base leading-relaxed text-indent">
+              镜头深入寒亭区洪伟年画风筝店。特写传承人杨红卫布满岁月痕迹的指尖与竹篾、纸张的每一次对话，呈现"以手抵心"的匠人哲学。当山东大学"鸢舞新篇"潍坊风筝非遗创意团队的年轻学子目光与这双巧手同框，一场跨越代际的无声对话已然完成。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 创新 -->
+      <div class="card-kite p-5 md:p-6 hover:scale-[1.01] transition-transform">
+        <div class="flex items-start gap-4">
+          <span class="chapter-icon flex-shrink-0 mt-1"><i class="fa-solid fa-lightbulb"></i></span>
+          <div class="flex-1">
+            <h3 class="text-xl md:text-2xl font-semibold text-kite-green mb-2 flex items-center gap-2">
+              <span class="w-8 h-px bg-kite-green/40"></span>创新：产业脉搏
+            </h3>
+            <p class="text-kite-brown/90 text-base leading-relaxed text-indent">
+              本篇章深入产业现场。从海鹏风筝坊的韩臻试图运用新材料承载现代意象，到潍坊永健风筝制造有限公司内激光雕刻与老师傅手检弧度的并行，再到潍坊天成飞鸢风筝有限公司的“太空风筝”与环保探索，清晰勾勒出古老技艺在现代化产业土壤中焕发新生的澎湃脉搏。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 育新 -->
+      <div class="card-kite p-5 md:p-6 hover:scale-[1.01] transition-transform">
+        <div class="flex items-start gap-4">
+          <span class="chapter-icon flex-shrink-0 mt-1"><i class="fa-solid fa-seedling"></i></span>
+          <div class="flex-1">
+            <h3 class="text-xl md:text-2xl font-semibold text-kite-green mb-2 flex items-center gap-2">
+              <span class="w-8 h-px bg-kite-green/40"></span>育新：文化扎根
+            </h3>
+            <p class="text-kite-brown/90 text-base leading-relaxed text-indent">
+              影片视野投向传承的土壤与未来。从农家院墙上的“风筝谱”，到技艺被系统编入乡土教材，再到国际风筝节借助全景直播飞向世界，立体展现了非遗如何在民间根基与系统培育的双重滋养下，向下扎根，向上生长。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 终章 -->
+      <div class="card-kite p-5 md:p-6 hover:scale-[1.01] transition-transform">
+        <div class="flex items-start gap-4">
+          <span class="chapter-icon flex-shrink-0 mt-1"><i class="fa-solid fa-cloud-sun"></i></span>
+          <div class="flex-1">
+            <h3 class="text-xl md:text-2xl font-semibold text-kite-green mb-2 flex items-center gap-2">
+              <span class="w-8 h-px bg-kite-green/40"></span>终章：风起鸢都
+            </h3>
+            <p class="text-kite-brown/90 text-base leading-relaxed text-indent">
+              结尾画面诗意汇聚：飞舞的风筝、孩童的笑脸、匠人的专注与青春的身影，共同牵引连接大地与天空的丝线。最终点明题旨——真正的传承，是让文化基因在每一次风起时，都能敏锐捕捉时代脉搏，找到属于当下最自由而坚定的飞翔姿态。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 页脚（沿用首页风格） -->
+    <footer class="mt-16 pt-8 border-t border-kite-green/20 text-center text-kite-brown/80">
+      <i class="fa-solid fa-kite text-3xl text-kite-green mb-3"></i>
+      <p class="font-chinese text-sm tracking-widest">纸鸢非遗传承 · 鸢时漫记</p>
+      <p class="text-xs mt-2 opacity-60">保护非遗 · 传承文化 · 共享美好</p>
+    </footer>
+  </main>
+
+  <script>
+    // 返回上一页（增强）
+    function goBack() {
+      if (document.referrer) {
+        window.history.back();
+      } else {
+        window.location.href = '../index.html'; // 若无历史记录，跳转首页
+      }
+    }
+
+    // 视频加载错误处理
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.querySelector('video');
+      if (video) {
+        video.addEventListener('error', function() {
+          this.outerHTML = `
+            <div class="aspect-video w-full flex items-center justify-center bg-white/50 rounded-xl">
+              <div class="text-center text-kite-brown/70 p-6">
+                <i class="fa-solid fa-video-slash text-4xl mb-2"></i>
+                <p>视频暂时无法播放，请稍后重试</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+    });
+  </script>
+</body>
+</html>

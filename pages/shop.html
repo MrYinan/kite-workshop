@@ -1,0 +1,3583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>纸鸢工坊 | 文创商城</title>
+  <style>
+    :root {
+      --primary: #8c5a2b;
+      --secondary: #b88646;
+      --bg: #f5f0e8;
+      --card-bg: #fff;
+      --text: #333;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --active-color: #8c5a2b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      /* 给底部导航留出空间 */
+      padding-bottom: 70px;
+    }
+
+    /* 页面容器 - 所有页面统一容器 */
+    .page {
+      display: none; /* 默认隐藏所有页面 */
+      width: 100%;
+      min-height: calc(100vh - 70px); /* 减去底部导航高度 */
+    }
+    .page.active {
+      display: block; /* 激活的页面显示 */
+    }
+
+    /* 登录弹窗 */
+    .login-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .login-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: var(--shadow);
+    }
+    .login-box h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .close-login {
+      text-align: right;
+      cursor: pointer;
+      color: var(--primary);
+    }
+
+    /* 顶部导航栏 */
+    .top-nav {
+      background: #fff;
+      padding: 12px 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    /* 底部固定导航栏（核心：始终显示） */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: #fff;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 999;
+    }
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 12px;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .nav-tab.active {
+      color: var(--active-color);
+    }
+    .nav-tab i {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    /* 轮播图 */
+/* 轮播图 - 优化版 */
+/* 轮播图 - 优化版（修改后） */
+.carousel {
+  position: relative;
+  height: auto; 
+  max-height: 800px; /* 适当增大最大高度，让图片更舒展 */
+  overflow: hidden;
+  margin: 20px auto;
+  max-width: 1175px; /* 增大最大宽度（原1200px），或直接设为 none 取消最大宽度限制 */
+  width: 98%; /* 增大宽度占比（原95%），或直接设为 100% 占满屏幕宽度 */
+  border-radius: 12px;
+}
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%; /* 确保内部容器宽度100% */
+}
+.carousel-item {
+  min-width: 100%;
+  height: 300px; /* 基础高度，可根据图片调整 */
+  background-size: cover; /* 确保图片覆盖整个容器 */
+  background-position: center center; /* 居中显示 */
+  background-repeat: no-repeat; /* 禁止重复 */
+}
+/* 新增：移动端轮播图高度适配 */
+@media (max-width: 768px) {
+  .carousel-item {
+    height: 200px; /* 移动端降低高度 */
+  }
+}
+/* 轮播图左右切换箭头 */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0,0,0,0.3);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s;
+}
+.carousel-control:hover {
+  background-color: rgba(0,0,0,0.5);
+}
+.carousel-control.prev {
+  left: 15px;
+}
+.carousel-control.next {
+  right: 15px;
+}
+/* 隐藏移动端箭头（可选，根据需求调整） */
+@media (max-width: 480px) {
+  .carousel-control {
+    display: none;
+  }
+}
+    .carousel-indicators {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+    .indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+    }
+    .indicator.active {
+      background: #fff;
+    }
+
+    /* 分类导航 */
+    .category-nav {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 0 20px;
+    }
+    .category-item {
+      padding: 10px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--secondary);
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .category-item.active,
+    .category-item:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* 商品列表 */
+    .goods-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .goods-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .goods-card:hover {
+      transform: translateY(-5px);
+    }
+    .goods-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .goods-info {
+      padding: 12px;
+    }
+    .goods-name {
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .goods-price {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    /* 商品详情页 */
+    /* 返回按钮样式 */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 12px;
+  width: fit-content;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+.back-btn:hover {
+  background: var(--bg);
+  transition: all 0.3s;
+}
+/* 移动端适配返回按钮 */
+@media (max-width: 768px) {
+  .back-btn {
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+    .detail-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .detail-layout {
+      display: flex;
+      gap: 40px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    .detail-left {
+        flex: 1;
+        overflow-y: auto; /* 左侧可独立滚动 */
+        max-height: 80vh; /* 限制最大高度，避免超出屏幕 */
+    }
+    .detail-img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+    }
+    .detail-right {
+        flex: 1;
+        position: sticky; /* 核心：右侧固定 */
+        top: 100px; /* 距离顶部的距离，避免被顶部导航遮挡 */
+        align-self: flex-start; /* 防止被拉伸 */
+    }
+    .detail-name {
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    .detail-price {
+      font-size: 28px;
+      color: #e63946;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .detail-desc {
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+    /* 详情页选项卡 */
+    .detail-tabs {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    border-bottom: 1px solid #eee;
+    }
+    .detail-tab {
+    padding: 10px 0;
+    cursor: pointer;
+    color: #999;
+    border-bottom: 2px solid transparent;
+    }
+    .detail-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    }
+    /* 规格选择 */
+.spec-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+.spec-item {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.spec-item.active {
+  border-color: var(--primary);
+  background: #f5f0e8;
+  color: var(--primary);
+}
+/* 数量选择 */
+.quantity-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+.quantity-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+.quantity-input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+/* 用户评论 */
+.comment-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 新增：让头像图片填满容器 */
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.comment-info {
+  flex: 1;
+}
+.comment-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.comment-time {
+  color: #999;
+  font-size: 12px;
+}
+.comment-content {
+  line-height: 1.6;
+}
+    /* 选项卡内容区（默认隐藏，激活后显示） */
+    .tab-content {
+    display: none;
+    }
+    .tab-content.active {
+    display: block;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-cart {
+      background: var(--secondary);
+      color: #fff;
+    }
+    .btn-buy {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    /* 购物车页面 */
+    .cart-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .cart-empty {
+      text-align: center;
+      padding: 50px 0;
+      color: #999;
+    }
+    .cart-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .cart-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-item-name {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .cart-item-price {
+      color: #e63946;
+      font-weight: bold;
+    }
+    .cart-item-delete {
+      color: #999;
+      cursor: pointer;
+    }
+    .cart-total {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-total-price {
+      color: #e63946;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* 我的页面 */
+    .mine-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .mine-user {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .mine-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--secondary);
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 30px;
+    }
+    .mine-login-tip {
+      color: var(--primary);
+      cursor: pointer;
+    }
+    .mine-menu {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: var(--shadow);
+    }
+    .mine-menu-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .mine-menu-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* 促销信息模块 */
+.promo-info {
+  background: #fff8f5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+.promo-info .promo-row {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.promo-info .promo-badge {
+  display: inline-block;
+  background: #ff4444;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.promo-info .price-current {
+  font-size: 24px;
+  color: #ff4444;
+  font-weight: bold;
+}
+.promo-info .price-original {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+.promo-info .deadline {
+  color: #ff4444;
+  font-weight: 500;
+  font-size: 13px;
+}
+.promo-info .coupon {
+  background: #fff0e6;
+  color: #ff6600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-block;
+}
+.promo-info .gold-coin {
+  color: #ff6600;
+  font-size: 12px;
+}
+.promo-info .delivery,
+.promo-info .return {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #666;
+}
+.promo-info .delivery i,
+.promo-info .return i {
+  color: var(--primary);
+  font-size: 14px;
+}
+/* 购物车页面 - 两栏布局 */
+.cart-wrapper {
+  display: flex;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.cart-main {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.cart-sidebar {
+  width: 320px;
+}
+
+/* 顶部工具栏 */
+.cart-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.promo-tags {
+  display: flex;
+  gap: 10px;
+}
+
+.tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-red {
+  background: #fff2f2;
+  color: #ff3333;
+}
+
+.tag-pink {
+  background: #fff0f5;
+  color: #ff69b4;
+}
+
+.tag-yellow {
+  background: #fff9e6;
+  color: #ff9900;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 6px 30px 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.search-box i {
+  position: absolute;
+  right: 10px;
+  color: #999;
+  cursor: pointer;
+}
+
+/* 批量操作栏 */
+.batch-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.checkbox-label input {
+  cursor: pointer;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  background: #fff;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.action-btn:hover {
+  color: var(--primary);
+}
+
+/* 购物车商品项 - 新版式 */
+.cart-item-new {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.cart-item-checkbox {
+  margin-right: 15px;
+}
+
+.cart-item-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
+.cart-item-info {
+  flex: 1;
+  margin-right: 15px;
+}
+
+.cart-item-name {
+  font-size: 14px;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.cart-item-desc {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.cart-item-price {
+  font-size: 14px;
+  color: #ff3333;
+  font-weight: bold;
+}
+
+.cart-item-original-price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 5px;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 15px;
+}
+
+.quantity-btn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.quantity-input {
+  width: 36px;
+  height: 24px;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 12px;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.cart-item-action {
+  cursor: pointer;
+}
+
+.cart-item-action:hover {
+  color: var(--primary);
+}
+
+/* 结算面板 */
+.checkout-panel {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+}
+
+.checkout-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.checkout-empty {
+  margin-bottom: 20px;
+}
+
+.checkout-empty i {
+  font-size: 40px;
+  color: #ddd;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.checkout-empty i::after {
+  content: "空";
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: #ff9900;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-tip {
+  font-size: 14px;
+  color: #ff3333;
+  margin-top: 10px;
+}
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.total-price {
+  color: #ff3333;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.checkout-btn:disabled {
+  background: #ddd;
+  cursor: not-allowed;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .cart-wrapper {
+    flex-direction: column;
+  }
+  .cart-sidebar {
+    width: 100%;
+  }
+  .cart-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .search-box input {
+    width: 100%;
+  }
+}
+/* 订单页面样式 */
+.orders-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.orders-title {
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.order-tabs {
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.order-tab {
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.order-tab.active {
+  color: var(--primary);
+  font-weight: bold;
+  border-bottom: 2px solid var(--primary);
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.order-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.order-id {
+  font-size: 14px;
+  color: #666;
+}
+
+.order-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.order-status {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.order-items {
+  margin-bottom: 15px;
+}
+
+.order-item-goods {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.order-item-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-item-info {
+  flex: 1;
+}
+
+.order-item-name {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.order-item-price {
+  font-size: 14px;
+  color: #e63946;
+  font-weight: bold;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.order-total {
+  font-size: 14px;
+  color: #666;
+}
+
+.order-total-price {
+  font-size: 16px;
+  color: #e63946;
+  font-weight: bold;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.order-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.order-btn-pay {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.order-btn-cancel {
+  background: #999;
+  color: #fff;
+}
+
+.order-btn-completed {
+  background: #388e3c;
+  color: #fff;
+  cursor: default;
+}
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .detail-layout {
+        flex-direction: column;
+      }
+      .goods-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .carousel {
+        height: 200px;
+      }
+      .detail-layout {
+        padding: 20px;
+      }
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <!-- 引入图标库（用于底部导航图标） -->
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- 登录弹窗 -->
+  <div class="login-modal" id="loginModal">
+    <div class="login-box">
+      <div class="close-login" onclick="closeLogin()">× 关闭</div>
+      <h2>登录纸鸢工坊</h2>
+      <input type="text" id="username" placeholder="请输入用户名">
+      <input type="password" id="password" placeholder="请输入密码">
+      <button class="login-btn" onclick="login()">登录</button>
+    </div>
+  </div>
+
+  <!-- 顶部导航 -->
+  <div class="top-nav">
+    <div class="logo">纸鸢工坊</div>
+  </div>
+
+  <!-- 1. 首页（默认显示） -->
+  <div class="page active" id="homePage">
+    <!-- 轮播图 -->
+<!-- 轮播图 -->
+<div class="carousel" id="carousel">
+  <div class="carousel-inner" id="carouselInner">
+    <div class="carousel-item" style="background-image: url('../static/images/shop/前导图/1.png')"></div>
+    <div class="carousel-item" style="background-image: url('../static/images/shop/前导图/2.png')"></div>
+    <div class="carousel-item" style="background-image: url('../static/images/shop/前导图/3.png')"></div>
+  </div>
+  <!-- 新增左右箭头 -->
+  <div class="carousel-control prev" id="prevBtn">
+    <i class="fas fa-chevron-left"></i>
+  </div>
+  <div class="carousel-control next" id="nextBtn">
+    <i class="fas fa-chevron-right"></i>
+  </div>
+  <div class="carousel-indicators" id="indicators"></div>
+</div>
+
+    <!-- 分类导航 -->
+    <div class="category-nav" id="categoryNav">
+      <div class="category-item active" data-category="all">全部商品</div>
+      <div class="category-item" data-category="ip">人物IP衍生文创</div>
+      <div class="category-item" data-category="blessing">鸢都赐福系列</div>
+      <div class="category-item" data-category="elegant">飞鸢雅韵系列</div>
+      <div class="category-item" data-category="wonderland">纸鸢奇境系列</div>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="goods-container" id="goodsContainer"></div>
+  </div>
+
+  <!-- 2. 商品详情页（默认隐藏） -->
+<!-- 2. 商品详情页（默认隐藏） -->
+<div class="page" id="detailPage">
+  <div class="detail-container">
+     <!-- 新增返回首页按钮 -->
+    <div class="back-btn" onclick="switchPage('homePage')">
+      <i class="fas fa-arrow-left"></i> 返回首页
+    </div>
+    <div class="detail-layout">
+      <div class="detail-left">
+        <img id="detailImg" class="detail-img" src="" alt="商品图片">
+        <!-- 新增：详情页选项卡 -->
+        <div class="detail-tabs">
+          <div class="detail-tab active" data-tab="descTab">商品介绍</div>
+          <div class="detail-tab" data-tab="paramsTab">产品信息</div>
+          <div class="detail-tab" data-tab="commentsTab">用户评论</div>
+        </div>
+        <!-- 选项卡内容区 -->
+        <div class="tab-content active" id="descTab">
+          <div class="detail-desc" id="detailDesc"></div>
+        </div>
+        <div class="tab-content" id="paramsTab">
+          <div id="paramsContainer"></div>
+        </div>
+        <div class="tab-content" id="commentsTab">
+          <div id="commentContainer"></div>
+        </div>
+      </div>
+      <div class="detail-right">
+        <h2 class="detail-name" id="detailName"></h2>
+        <div class="detail-price" id="detailPrice"></div>
+          <!-- 新增：促销与物流信息容器 -->
+        <div class="promo-info" id="promoInfo"></div>
+        <!-- 新增：规格选择 -->
+        <div class="spec-select" id="specSelect"></div>
+        <!-- 新增：数量选择 -->
+        <div class="quantity-select">
+          <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+          <input type="number" class="quantity-input" value="1" min="1">
+          <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+        </div>
+        <div class="action-buttons">
+        <button class="btn btn-cart" onclick="addToCart()">加入购物车</button>
+        <button class="btn btn-buy" onclick="buyNow()">立即购买</button>
+        <button class="btn" style="background: #ff9900; color: #fff;" onclick="addToCollection()">
+            <i class="fas fa-heart"></i> 收藏
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- 3. 购物车页面（默认隐藏） -->
+<!-- 3. 购物车页面（默认隐藏） -->
+<div class="page" id="cartPage">
+  <div class="cart-wrapper">
+    <!-- 左侧：商品操作区 -->
+    <div class="cart-main">
+      <!-- 顶部操作栏 -->
+      <div class="cart-toolbar">
+        <div class="toolbar-left">
+          <span class="cart-title">全部商品(<span id="cartTotalCount">0</span>)</span>
+          <div class="promo-tags">
+            <span class="tag tag-red"><i class="fas fa-ticket-alt"></i> 消费券</span>
+            <span class="tag tag-pink"><i class="fas fa-bolt"></i> 官方立减</span>
+            <span class="tag tag-red"><i class="fas fa-arrow-down"></i> 超级立减</span>
+            <span class="tag tag-yellow"><i class="fas fa-bolt"></i> 降价</span>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <div class="filter-group">
+            <!-- <select class="filter-select">
+              <option>分类</option>
+            </select>
+            <select class="filter-select">
+              <option>状态</option>
+            </select> -->
+            <!-- <div class="search-box">
+              <input type="text" placeholder="搜索购物车内商品">
+              <i class="fas fa-search"></i>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 批量操作栏 -->
+      <div class="batch-actions">
+        <label class="checkbox-label">
+          <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+          <span>全选</span>
+        </label>
+        <!-- <button class="action-btn" onclick="moveToCollection()">移入收藏</button> -->
+        <button class="action-btn" onclick="deleteSelectedItems()">删除</button>
+      </div>
+
+      <!-- 购物车商品列表 -->
+      <div class="cart-items" id="cartItemsList">
+        <!-- 商品项由JS动态渲染 -->
+      </div>
+    </div>
+
+    <!-- 右侧：结算面板 -->
+    <div class="cart-sidebar">
+      <div class="checkout-panel">
+        <h3 class="checkout-title">结算明细</h3>
+        <div class="checkout-empty" id="checkoutEmpty">
+          <i class="fas fa-shopping-cart"></i>
+          <span>空</span>
+          <p class="checkout-tip">选择商品查看实际支付价格</p>
+        </div>
+        <div class="checkout-total">
+          <span>合计:</span>
+          <span class="total-price" id="checkoutTotalPrice">¥0</span>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn" disabled>结算</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- 4. 我的页面（默认隐藏） -->
+  <div class="page" id="minePage">
+    <div class="mine-container">
+      <div class="mine-user" id="mineUser">
+        <div class="mine-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3 id="userName">请先登录</h3>
+        <p class="mine-login-tip" onclick="showLogin()">点击登录</p>
+      </div>
+        <div class="mine-menu">
+        <div class="mine-menu-item" onclick="switchToOrdersPage()">
+            <span><i class="fas fa-shopping-bag"></i> 我的订单</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="mine-menu-item" onclick="switchToCollectionPage()">
+            <span><i class="fas fa-heart"></i> 我的收藏</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="mine-menu-item" onclick="switchToSettingsPage()">
+            <span><i class="fas fa-cog"></i> 设置</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        </div>
+    </div>
+  </div>
+<!-- 5. 我的订单页面（默认隐藏） -->
+<div class="page" id="ordersPage">
+  <div class="orders-container">
+    <div class="back-btn" onclick="switchPage('minePage')">
+      <i class="fas fa-arrow-left"></i> 返回我的
+    </div>
+    <h2 class="orders-title">我的订单</h2>
+    
+    <!-- 订单状态筛选 -->
+    <div class="order-tabs">
+      <div class="order-tab active" data-status="all">全部</div>
+      <div class="order-tab" data-status="pending">待付款</div>
+      <div class="order-tab" data-status="shipping">待发货</div>
+      <div class="order-tab" data-status="completed">已完成</div>
+    </div>
+    
+    <!-- 订单列表 -->
+    <div class="orders-list" id="ordersList">
+      <!-- 订单由JS动态渲染 -->
+    </div>
+  </div>
+</div>
+<!-- 6. 我的收藏页面（默认隐藏） -->
+<div class="page" id="collectionPage">
+  <div class="mine-container">
+    <div class="back-btn" onclick="switchPage('minePage')">
+      <i class="fas fa-arrow-left"></i> 返回我的
+    </div>
+    <h2 class="orders-title">我的收藏</h2>
+    
+    <div class="goods-container" id="collectionContainer">
+      <!-- 收藏商品由JS动态渲染 -->
+    </div>
+  </div>
+</div>
+
+<!-- 7. 设置页面（默认隐藏） -->
+<div class="page" id="settingsPage">
+  <div class="mine-container">
+    <div class="back-btn" onclick="switchPage('minePage')">
+      <i class="fas fa-arrow-left"></i> 返回我的
+    </div>
+    <h2 class="orders-title">设置中心</h2>
+    
+    <div class="mine-menu" style="margin-top: 20px;">
+      <!-- 消息通知开关 -->
+      <div class="mine-menu-item" onclick="toggleSetting('notification')">
+        <span><i class="fas fa-bell"></i> 消息通知</span>
+        <span id="notificationStatus">${settings.notification ? '开启' : '关闭'}</span>
+      </div>
+      
+      <!-- 自动登录开关 -->
+      <div class="mine-menu-item" onclick="toggleSetting('autoLogin')">
+        <span><i class="fas fa-sign-in-alt"></i> 自动登录</span>
+        <span id="autoLoginStatus">${settings.autoLogin ? '开启' : '关闭'}</span>
+      </div>
+      
+      <!-- 修改密码 -->
+      <div class="mine-menu-item" onclick="showChangePassword()">
+        <span><i class="fas fa-lock"></i> 修改密码</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <!-- 清除缓存 -->
+      <div class="mine-menu-item" onclick="clearCache()">
+        <span><i class="fas fa-trash-alt"></i> 清除缓存</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <!-- 退出登录 -->
+      <div class="mine-menu-item" onclick="logout()" style="color: #e63946;">
+        <span><i class="fas fa-sign-out-alt"></i> 退出登录</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+    
+    <!-- 修改密码弹窗 -->
+    <div class="login-modal" id="changePwdModal">
+      <div class="login-box">
+        <div class="close-login" onclick="closeChangePassword()">× 关闭</div>
+        <h2>修改密码</h2>
+        <input type="password" id="oldPwd" placeholder="请输入原密码">
+        <input type="password" id="newPwd" placeholder="请输入新密码">
+        <input type="password" id="confirmPwd" placeholder="请确认新密码">
+        <button class="login-btn" onclick="changePassword()">确认修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- 底部固定导航栏（始终显示） -->
+  <div class="bottom-nav">
+    <div class="nav-tab active" id="navHome" onclick="switchPage('homePage')">
+      <i class="fas fa-home"></i>
+      <span>首页</span>
+    </div>
+    <div class="nav-tab" id="navCart" onclick="switchPage('cartPage')">
+      <i class="fas fa-shopping-cart"></i>
+      <span>购物车</span>
+    </div>
+    <div class="nav-tab" id="navMine" onclick="switchPage('minePage')">
+      <i class="fas fa-user"></i>
+      <span>我的</span>
+    </div>
+  </div>
+
+  <script>
+    // 商品数据
+    const goods = [
+  // 2. 小鸢徽章
+  {
+    id: 2,
+    name: '小鸢徽章',
+    price: 15,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢徽章.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '圆形款', price: 15 },
+      { name: '方形款', price: 15 },
+      { name: '异形款', price: 18 }
+    ],
+    desc: '合金材质徽章，表面滴胶工艺，防刮耐磨不氧化，图案采用小鸢经典形象设计，尺寸小巧精致，可别在背包/衣服/文具上，是IP爱好者必备周边。',
+    params: {
+      材质: '锌合金+滴胶',
+      尺寸: '直径3cm（圆形）/3×3cm（方形）',
+      工艺: '烤漆+滴胶',
+      配件: '蝴蝶扣底座',
+      包装: '独立opp袋'
+    },
+    comments: [
+      {
+        id: 201,
+        username: '徽章控',
+        avatar: 'https://picsum.photos/40/40?random=3',
+        time: '2024-03-01',
+        content: '做工超精致，细节拉满，蝴蝶扣很牢固',
+        score: 5
+      },
+      {
+        id: 202,
+        username: '小鸢粉丝',
+        avatar: 'https://picsum.photos/40/40?random=4',
+        time: '2024-02-28',
+        content: '异形款超好看，颜色和图片一致，性价比很高',
+        score: 5
+      }
+    ]
+  },
+  // 3. 小鸢卡套
+  {
+    id: 3,
+    name: '小鸢卡套',
+    price: 25,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢卡套.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '挂绳款', price: 25 },
+      { name: '钥匙扣款', price: 23 },
+      { name: '磁吸款', price: 28 }
+    ],
+    desc: '高透PVC材质卡套，防摔防刮，内置卡位可放身份证/银行卡/校园卡，表面印刷小鸢卡通图案，边缘包边设计更耐用，搭配挂绳/钥匙扣便携实用。',
+    params: {
+      材质: '高透PVC+ABS边框',
+      尺寸: '9×6cm（内槽）',
+      卡位: '1主卡位+1副卡位',
+      配件: '挂绳/钥匙扣（对应款式）',
+      适用: '各类卡片/门禁卡'
+    },
+    comments: [
+      {
+        id: 301,
+        username: '打工人必备',
+        avatar: 'https://picsum.photos/40/40?random=5',
+        time: '2024-01-20',
+        content: '卡套很厚实，挂绳质量好，再也不怕丢工牌了',
+        score: 4
+      },
+      {
+        id: 302,
+        username: '学生党',
+        avatar: 'https://picsum.photos/40/40?random=6',
+        time: '2024-01-15',
+        content: '图案超可爱，校园卡放进去正合适，磁吸款取卡很方便',
+        score: 5
+      }
+    ]
+  },
+  // 4. 小鸢手卡
+  {
+    id: 4,
+    name: '小鸢手卡',
+    price: 30,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢手卡.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '基础款（10张）', price: 30 },
+      { name: '典藏款（20张）', price: 55 },
+      { name: '限定款（15张）', price: 45 }
+    ],
+    desc: '300g铜版纸印刷手卡，双面覆膜防水防刮，每张印有小鸢不同造型插画，尺寸小巧便于收藏，典藏款含隐藏款卡片，是IP收藏爱好者的不二之选。',
+    params: {
+      材质: '300g铜版纸+覆膜',
+      尺寸: '8.5×5.4cm（标准卡牌尺寸）',
+      工艺: '四色印刷+覆哑膜',
+      包装: '收藏卡册/密封袋',
+      数量: '对应款式张数'
+    },
+    comments: [
+      {
+        id: 401,
+        username: '卡牌收藏家',
+        avatar: 'https://picsum.photos/40/40?random=7',
+        time: '2024-02-05',
+        content: '印刷质量超棒，色彩还原度高，典藏款抽到了隐藏款！',
+        score: 5
+      },
+      {
+        id: 402,
+        username: '插画爱好者',
+        avatar: 'https://picsum.photos/40/40?random=8',
+        time: '2024-02-01',
+        content: '每张插画都超用心，纸张厚实，值得收藏',
+        score: 4
+      }
+    ]
+  },
+  
+  // 5. 小鸢贴纸
+  {
+    id: 5,
+    name: '小鸢贴纸',
+    price: 10,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢贴纸.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '日常款（1张）', price: 10 },
+      { name: '节日款（1张）', price: 10 },
+      { name: '全套款（5张）', price: 40 }
+    ],
+    desc: '和纸材质贴纸，可反复粘贴不留胶，图案包含小鸢日常/节日/Q版等多种造型，尺寸多样，可装饰笔记本/水杯/手机壳等，DIY创意十足。',
+    params: {
+      材质: '和纸/PET（防水款）',
+      尺寸: 'A6尺寸（单张）',
+      工艺: '模切成型，即撕即用',
+      特性: '可移胶，不留残胶',
+      适用: '各类光滑表面'
+    },
+    comments: [
+      {
+        id: 501,
+        username: '手帐达人',
+        avatar: 'https://picsum.photos/40/40?random=9',
+        time: '2024-03-10',
+        content: '和纸质感超棒，贴在手帐上太好看了，粘性适中',
+        score: 5
+      },
+      {
+        id: 502,
+        username: 'DIY爱好者',
+        avatar: 'https://picsum.photos/40/40?random=10',
+        time: '2024-03-08',
+        content: 'PET款防水，贴水杯上超合适，图案清晰',
+        score: 4
+      }
+    ]
+  },
+  // 1. 小鸢T恤
+  {
+    id: 1,
+    name: '小鸢T恤',
+    price: 96,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢T恤.png',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '白色 S', price: 96 },
+      { name: '白色 M', price: 96 },
+      { name: '黑色 L', price: 96 },
+      { name: '黑色 XL', price: 96 }
+    ],
+    desc: '采用100%精梳棉面料，亲肤透气不闷汗，领口加固不易变形，正面印有小鸢IP原创图案，色彩鲜艳不褪色，日常穿搭/IP周边收藏皆适宜。',
+    params: {
+      材质: '100%精梳棉',
+      尺码: 'S/M/L/XL',
+      颜色: '白色/黑色',
+      工艺: '数码直喷印花',
+      洗涤: '可机洗（水温≤30℃），不可漂白'
+    },
+    comments: [
+      {
+        id: 101,
+        username: '鸢友123',
+        avatar: 'https://picsum.photos/40/40?random=1',
+        time: '2024-02-15',
+        content: '质量很好，图案清晰，穿着很舒服！尺码也很标准',
+        score: 5
+      },
+      {
+        id: 102,
+        username: '纸鸢爱好者',
+        avatar: 'https://picsum.photos/40/40?random=2',
+        time: '2024-02-10',
+        content: '面料柔软，印花不扎皮肤，洗了一次也没掉色，推荐！',
+        score: 4
+      }
+    ]
+  },
+  // 6. 小鸢钥匙扣
+  {
+    id: 6,
+    name: '小鸢钥匙扣',
+    price: 20,
+    image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢钥匙扣.png',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '亚克力款', price: 20 },
+      { name: '毛绒款', price: 25 },
+      { name: '金属款', price: 28 }
+    ],
+    desc: '亚克力款采用高透材质，双面印刷小鸢图案，边缘抛光无毛刺；毛绒款填充饱满，手感柔软；金属款质感十足，防刮耐磨，多款可选满足不同喜好。',
+    params: {
+      材质: '亚克力/短毛绒/锌合金（对应款式）',
+      尺寸: '6cm（亚克力）/8cm（毛绒）/5cm（金属）',
+      配件: '龙虾扣+挂绳',
+      工艺: 'UV印刷/刺绣/烤漆',
+      重量: '约20g（亚克力）/约30g（毛绒）/约40g（金属）'
+    },
+    comments: [
+      {
+        id: 601,
+        username: '钥匙扣控',
+        avatar: 'https://picsum.photos/40/40?random=11',
+        time: '2024-01-10',
+        content: '亚克力款超透亮，图案没有色差，龙虾扣很结实',
+        score: 5
+      },
+      {
+        id: 602,
+        username: '毛绒党',
+        avatar: 'https://picsum.photos/40/40?random=12',
+        time: '2024-01-05',
+        content: '毛绒款手感超软，做工精细，挂包包上超可爱',
+        score: 5
+      }
+    ]
+  },
+  // 7. 小纸T恤
+  {
+    id: 7,
+    name: '小纸T恤',
+    price: 96,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸T恤.png',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '浅灰 S', price: 96 },
+      { name: '浅灰 M', price: 96 },
+      { name: '藏青 L', price: 96 },
+      { name: '藏青 XL', price: 96 }
+    ],
+    desc: '重磅230g纯棉面料，不易变形，透气吸汗，采用小纸IP专属图案设计，印花采用环保油墨，亲肤无刺激，版型宽松舒适，男女同款。',
+    params: {
+      材质: '230g重磅纯棉',
+      尺码: 'S/M/L/XL',
+      颜色: '浅灰/藏青',
+      工艺: '丝网印花',
+      版型: '宽松落肩款'
+    },
+    comments: [
+      {
+        id: 701,
+        username: '纯棉爱好者',
+        avatar: 'https://picsum.photos/40/40?random=13',
+        time: '2024-02-20',
+        content: '面料超舒服，重磅棉果然不一样，洗了没缩水',
+        score: 5
+      },
+      {
+        id: 702,
+        username: '小纸粉丝',
+        avatar: 'https://picsum.photos/40/40?random=14',
+        time: '2024-02-18',
+        content: '藏青色超显白，版型宽松，175/65穿L正合适',
+        score: 4
+      }
+    ]
+  },
+ // 12. 小纸钥匙扣
+  {
+    id: 12,
+    name: '小纸钥匙扣',
+    price: 20,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸钥匙扣.png',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '滴胶款', price: 20 },
+      { name: '木质款', price: 22 },
+      { name: '硅胶款', price: 18 }
+    ],
+    desc: '滴胶款高透耐磨，图案立体；木质款采用榉木材质，激光雕刻更有质感；硅胶款柔软防摔，多款可选，搭配龙虾扣挂绳，便携实用又好看。',
+    params: {
+      材质: '环氧树脂/榉木/食品级硅胶（对应款式）',
+      尺寸: '5cm（滴胶/木质）/6cm（硅胶）',
+      工艺: '滴胶/激光雕刻/注塑',
+      配件: '龙虾扣+编织挂绳',
+      特性: '防摔/耐磨/环保'
+    },
+    comments: [
+      {
+        id: 1201,
+        username: '钥匙扣收集者',
+        avatar: 'https://picsum.photos/40/40?random=23',
+        time: '2024-01-18',
+        content: '木质款有淡淡的木香，雕刻很精细，超喜欢',
+        score: 5
+      },
+      {
+        id: 1202,
+        username: '硅胶党',
+        avatar: 'https://picsum.photos/40/40?random=24',
+        time: '2024-01-15',
+        content: '硅胶款超软，不小心掉地上也不怕碎，图案很清晰',
+        score: 4
+      }
+    ]
+  },
+  // 9. 小纸卡套
+  {
+    id: 9,
+    name: '小纸卡套',
+    price: 25,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸卡套.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '旋转款', price: 25 },
+      { name: '翻盖款', price: 28 },
+      { name: '简约款', price: 22 }
+    ],
+    desc: 'ABS环保材质卡套，防摔抗压，高透视窗清晰展示卡片内容，表面印刷小纸卡通图案，旋转款可360°旋转，翻盖款更防尘，适合各类卡片收纳。',
+    params: {
+      材质: 'ABS+高透PC',
+      尺寸: '10×6.5cm',
+      卡位: '1-2个',
+      开合方式: '旋转/翻盖/抽拉（对应款式）',
+      配件: '金属挂绳/钥匙扣'
+    },
+    comments: [
+      {
+        id: 901,
+        username: '通勤必备',
+        avatar: 'https://picsum.photos/40/40?random=17',
+        time: '2024-01-25',
+        content: '旋转款超实用，刷卡不用取卡，材质很结实',
+        score: 5
+      },
+      {
+        id: 902,
+        username: '学生党',
+        avatar: 'https://picsum.photos/40/40?random=18',
+        time: '2024-01-22',
+        content: '翻盖款防尘效果好，图案可爱，性价比很高',
+        score: 4
+      }
+    ]
+  },
+  // 10. 小纸手卡
+  {
+    id: 10,
+    name: '小纸手卡',
+    price: 30,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸手卡.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '基础款（10张）', price: 30 },
+      { name: '季节款（12张）', price: 35 },
+      { name: '限定款（18张）', price: 50 }
+    ],
+    desc: '350g进口白卡纸，双面烫金工艺，每张卡片印有小纸不同季节主题插画，边缘圆角处理更安全，限定款含签名版卡片，收藏价值更高。',
+    params: {
+      材质: '350g进口白卡纸+烫金',
+      尺寸: '9×5.5cm',
+      工艺: '四色印刷+局部烫金',
+      包装: '定制卡盒',
+      特色: '部分卡片含AR效果（扫码可看动态）'
+    },
+    comments: [
+      {
+        id: 1001,
+        username: '收藏控',
+        avatar: 'https://picsum.photos/40/40?random=19',
+        time: '2024-02-25',
+        content: '烫金工艺超精美，AR效果很惊喜，太值了！',
+        score: 5
+      },
+      {
+        id: 1002,
+        username: '插画控',
+        avatar: 'https://picsum.photos/40/40?random=20',
+        time: '2024-02-22',
+        content: '季节款每张都超好看，纸张质感一流，推荐！',
+        score: 5
+      }
+    ]
+  },
+  // 11. 小纸贴纸
+  {
+    id: 11,
+    name: '小纸贴纸',
+    price: 10,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸贴纸.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '可爱款（1张）', price: 10 },
+      { name: '治愈款（1张）', price: 10 },
+      { name: '全套款（6张）', price: 45 }
+    ],
+    desc: 'PET防水贴纸，撕贴不留残胶，图案以小纸治愈系日常为主题，色彩柔和，尺寸多样，可装饰笔记本/手帐/水杯/电脑等，防水耐磨更耐用。',
+    params: {
+      材质: 'PET防水材质',
+      尺寸: 'A6（单张）',
+      工艺: '高清印刷+模切',
+      特性: '防水/防油/耐磨',
+      适用: '各类光滑表面'
+    },
+    comments: [
+      {
+        id: 1101,
+        username: '手帐er',
+        avatar: 'https://picsum.photos/40/40?random=21',
+        time: '2024-03-20',
+        content: 'PET材质超赞，防水效果好，贴水杯上洗了好几次都没掉',
+        score: 5
+      },
+      {
+        id: 1102,
+        username: '贴纸爱好者',
+        avatar: 'https://picsum.photos/40/40?random=22',
+        time: '2024-03-18',
+        content: '治愈款图案超暖心，模切很整齐，撕起来很方便',
+        score: 4
+      }
+    ]
+  },
+   // 8. 小纸徽章
+  {
+    id: 8,
+    name: '小纸徽章',
+    price: 15,
+    image: '../static/images/shop/1.人物IP衍生文创/小纸/小纸徽章.jpg',
+    category: 'ip',
+    categoryName: '人物IP衍生文创',
+    specs: [
+      { name: '星星款', price: 15 },
+      { name: '爱心款', price: 15 },
+      { name: '方形款', price: 18 }
+    ],
+    desc: '烤漆工艺徽章，色彩饱满不易掉色，图案采用小纸Q版形象设计，边缘打磨光滑无毛刺，蝴蝶扣底座牢固，可作为背包/服饰装饰，小巧精致。',
+    params: {
+      材质: '锌合金+烤漆',
+      尺寸: '3.5cm（星星/爱心）/3×3cm（方形）',
+      工艺: '烤漆填色+抛光',
+      配件: '蝴蝶扣',
+      包装: '精美礼盒（礼盒款加5元）'
+    },
+    comments: [
+      {
+        id: 801,
+        username: '周边收集者',
+        avatar: 'https://picsum.photos/40/40?random=15',
+        time: '2024-03-15',
+        content: '烤漆颜色超正，细节处理很好，值得入手',
+        score: 5
+      },
+      {
+        id: 802,
+        username: '小纸爱好者',
+        avatar: 'https://picsum.photos/40/40?random=16',
+        time: '2024-03-12',
+        content: '爱心款超萌，包装也很精致，送朋友很合适',
+        score: 4
+      }
+    ]
+  },
+  
+  // 13. 笔记本（鸢都赐福系列）
+  {
+    id: 13,
+    name: '笔记本',
+    price: 45,
+    image: '../static/images/shop/2.“鸢都赐福”系列/笔记本.jpg',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: 'A5横线款', price: 45 },
+      { name: 'A5方格款', price: 45 },
+      { name: 'A6空白款', price: 38 }
+    ],
+    desc: '鸢都赐福主题笔记本，封面采用烫金工艺，内页80g米黄护眼纸，书写不洇墨，锁线装订可180°平摊，封面图案融合潍坊风筝文化元素，兼具实用与收藏价值。',
+    params: {
+      尺寸: 'A5（210×148mm）/A6（148×105mm）',
+      内页: '80g米黄护眼纸',
+      页数: '128页',
+      装订: '锁线胶装',
+      封面: '250g特种纸+烫金'
+    },
+    comments: [
+      {
+        id: 1301,
+        username: '文具控',
+        avatar: 'https://picsum.photos/40/40?random=25',
+        time: '2024-02-08',
+        content: '纸张超赞，书写很顺滑，锁线装订平摊很方便',
+        score: 5
+      },
+      {
+        id: 1302,
+        username: '传统文化爱好者',
+        avatar: 'https://picsum.photos/40/40?random=26',
+        time: '2024-02-05',
+        content: '封面烫金超精致，风筝图案设计很有特色，值得收藏',
+        score: 4
+      }
+    ]
+  },
+  // 14. 冰箱贴（鸢都赐福系列）
+  {
+    id: 14,
+    name: '冰箱贴',
+    price: 25,
+    image: '../static/images/shop/2.“鸢都赐福”系列/冰箱贴.jpg',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: '沙燕风筝款', price: 25 },
+      { name: '龙头蜈蚣款', price: 25 },
+      { name: '蝴蝶风筝款', price: 25 }
+    ],
+    desc: '树脂材质冰箱贴，表面彩绘工艺，色彩鲜艳不褪色，磁吸力强，图案以潍坊经典风筝造型为设计元素，兼具装饰性与实用性，是特色文创伴手礼。',
+    params: {
+      材质: '树脂+强力磁铁',
+      尺寸: '8×6cm',
+      工艺: '手工彩绘+抛光',
+      磁吸: '强力磁铁，可吸附各类铁质表面',
+      包装: '精美礼盒'
+    },
+    comments: [
+      {
+        id: 1401,
+        username: '伴手礼采购',
+        avatar: 'https://picsum.photos/40/40?random=27',
+        time: '2024-03-05',
+        content: '送给外地朋友的，都说超有特色，磁吸力很强',
+        score: 5
+      },
+      {
+        id: 1402,
+        username: '文创爱好者',
+        avatar: 'https://picsum.photos/40/40?random=28',
+        time: '2024-03-02',
+        content: '彩绘工艺超棒，细节很到位，摆在冰箱上超好看',
+        score: 4
+      }
+    ]
+  },
+  // 15. 龙头蜈蚣文创形象线稿
+  {
+    id: 15,
+    name: '龙头蜈蚣文创形象线稿',
+    price: 35,
+    image: '../static/images/shop/2.“鸢都赐福”系列/龙头蜈蚣 文创形象 线稿.png',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: 'A4单张款', price: 35 },
+      { name: 'A3套装款（3张）', price: 88 },
+      { name: '典藏装裱款', price: 128 }
+    ],
+    desc: '龙头蜈蚣风筝主题线稿，由非遗传承人指导设计，采用120g艺术纸印刷，线条流畅清晰，A3套装含不同造型线稿，典藏款含实木装裱，适合收藏/临摹/装饰。',
+    params: {
+      材质: '120g艺术纸/实木相框（装裱款）',
+      尺寸: 'A4（210×297mm）/A3（297×420mm）',
+      工艺: '高清印刷/手工装裱',
+      数量: '1张（单张）/3张（套装）',
+      特色: '非遗元素+现代设计'
+    },
+    comments: [
+      {
+        id: 1501,
+        username: '美术生',
+        avatar: 'https://picsum.photos/40/40?random=29',
+        time: '2024-01-08',
+        content: '线稿超精美，印刷很清晰，临摹起来很舒服',
+        score: 5
+      },
+      {
+        id: 1502,
+        username: '非遗爱好者',
+        avatar: 'https://picsum.photos/40/40?random=30',
+        time: '2024-01-05',
+        content: '典藏款装裱很精致，挂在家里超有艺术感',
+        score: 4
+      }
+    ]
+  },
+  // 16. 龙头蜈蚣文创形象
+  {
+    id: 16,
+    name: '龙头蜈蚣文创形象',
+    price: 55,
+    image: '../static/images/shop/2.“鸢都赐福”系列/龙头蜈蚣 文创形象.png',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: 'A4彩印款', price: 55 },
+      { name: 'A3彩印款', price: 78 },
+      { name: '帆布挂画款', price: 168 }
+    ],
+    desc: '龙头蜈蚣风筝文创形象彩印画，采用环保油墨印刷，色彩还原度高，帆布挂画款采用加厚帆布材质，配实木挂轴，悬挂更平整，是家居装饰/文创收藏佳品。',
+    params: {
+      材质: '150g铜版纸/加厚帆布（挂画款）',
+      尺寸: 'A4/A3/40×60cm（挂画）',
+      工艺: '四色高清印刷/热转印',
+      配件: '挂轴+挂钩（挂画款）',
+      特色: '非遗风筝元素+现代美学'
+    },
+    comments: [
+      {
+        id: 1601,
+        username: '装饰画爱好者',
+        avatar: 'https://picsum.photos/40/40?random=31',
+        time: '2024-02-12',
+        content: '色彩超鲜艳，印刷质量一流，挂客厅超有格调',
+        score: 5
+      },
+      {
+        id: 1602,
+        username: '文创收藏者',
+        avatar: 'https://picsum.photos/40/40?random=32',
+        time: '2024-02-10',
+        content: '帆布款质感超棒，挂轴很有分量，值得入手',
+        score: 4
+      }
+    ]
+  },
+  // 17. 书签（鸢都赐福系列）
+  {
+    id: 17,
+    name: '书签',
+    price: 18,
+    image: '../static/images/shop/2.“鸢都赐福”系列/书签.jpg',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: '木质款（单枚）', price: 18 },
+      { name: '金属款（单枚）', price: 25 },
+      { name: '套装款（6枚）', price: 98 }
+    ],
+    desc: '木质款采用胡桃木/榉木材质，激光雕刻风筝图案，纹理自然；金属款采用黄铜材质，镂空设计更精致，套装款含6种经典风筝造型，是阅读/收藏/送礼佳品。',
+    params: {
+      材质: '胡桃木/榉木/黄铜（对应款式）',
+      尺寸: '15×3cm',
+      工艺: '激光雕刻/镂空蚀刻',
+      配件: '流苏挂饰',
+      包装: '锦盒包装（套装款）'
+    },
+    comments: [
+      {
+        id: 1701,
+        username: '阅读爱好者',
+        avatar: 'https://picsum.photos/40/40?random=33',
+        time: '2024-03-15',
+        content: '胡桃木款有淡淡的木香，雕刻很精细，流苏超好看',
+        score: 5
+      },
+      {
+        id: 1702,
+        username: '书签控',
+        avatar: 'https://picsum.photos/40/40?random=34',
+        time: '2024-03-12',
+        content: '金属款镂空设计超精致，黄铜材质有质感，推荐！',
+        score: 4
+      }
+    ]
+  },
+  // 18. 文创组合展示（鸢都赐福系列）
+  {
+    id: 18,
+    name: '文创组合展示',
+    price: 128,
+    image: '../static/images/shop/2.“鸢都赐福”系列/文创组合展示.jpg',
+    category: 'blessing',
+    categoryName: '鸢都赐福系列',
+    specs: [
+      { name: '基础组合（5件）', price: 128 },
+      { name: '豪华组合（8件）', price: 198 },
+      { name: '典藏组合（12件）', price: 298 }
+    ],
+    desc: '鸢都赐福文创组合套装，基础组合含笔记本/书签/冰箱贴/贴纸/明信片，豪华组合加赠钥匙扣/徽章/帆布包，典藏组合含全部品类+限定款周边，性价比更高。',
+    params: {
+      基础组合: '笔记本×1+书签×1+冰箱贴×1+贴纸×1+明信片×1',
+      豪华组合: '基础组合+钥匙扣×1+徽章×1+帆布包×1',
+      典藏组合: '豪华组合+限定款手卡×1+限定款T恤×1+装裱画×1',
+      包装: '定制礼盒',
+      特色: '一站式收藏鸢都赐福系列文创'
+    },
+    comments: [
+      {
+        id: 1801,
+        username: '礼盒采购',
+        avatar: 'https://picsum.photos/40/40?random=35',
+        time: '2024-01-30',
+        content: '送给客户的，礼盒超精致，内容丰富，反馈很好',
+        score: 5
+      },
+      {
+        id: 1802,
+        username: '文创爱好者',
+        avatar: 'https://picsum.photos/40/40?random=36',
+        time: '2024-01-28',
+        content: '豪华组合性价比超高，每件都超精致，太值了！',
+        score: 4
+      }
+    ]
+  },
+  // 19. 抱枕1（飞鸢雅韵系列）
+  {
+    id: 19,
+    name: '抱枕1',
+    price: 68,
+    image: '../static/images/shop/3.“飞鸢雅韵”系列/抱枕1.png',
+    category: 'elegant',
+    categoryName: '飞鸢雅韵系列',
+    specs: [
+      { name: '40×40cm', price: 68 },
+      { name: '50×50cm', price: 78 },
+      { name: '60×60cm', price: 88 }
+    ],
+    desc: '飞鸢雅韵系列抱枕，采用高密天鹅绒面料，手感柔软亲肤，内芯填充高弹PP棉，不易变形，表面印花采用潍坊风筝经典纹样，色彩雅致，兼具装饰与实用。',
+    params: {
+      面料: '高密天鹅绒',
+      内芯: '高弹PP棉',
+      尺寸: '40×40cm/50×50cm/60×60cm',
+      工艺: '数码印花，不掉色',
+      洗涤: '可机洗（建议套洗衣袋）'
+    },
+    comments: [
+      {
+        id: 1901,
+        username: '家居爱好者',
+        avatar: 'https://picsum.photos/40/40?random=37',
+        time: '2024-02-28',
+        content: '面料超柔软，填充很饱满，靠起来超舒服',
+        score: 5
+      },
+      {
+        id: 1902,
+        username: '抱枕控',
+        avatar: 'https://picsum.photos/40/40?random=38',
+        time: '2024-02-25',
+        content: '50×50cm尺寸正合适，印花很清晰，洗了没掉色',
+        score: 4
+      }
+    ]
+  },
+  // 20. 抱枕2（飞鸢雅韵系列）
+  {
+    id: 20,
+    name: '抱枕2',
+    price: 68,
+    image: '../static/images/shop/3.“飞鸢雅韵”系列/抱枕2.png',
+    category: 'elegant',
+    categoryName: '飞鸢雅韵系列',
+    specs: [
+      { name: '40×40cm', price: 68 },
+      { name: '50×50cm', price: 78 },
+      { name: '60×60cm', price: 88 }
+    ],
+    desc: '飞鸢雅韵系列第二款抱枕，采用冰丝面料，夏季使用更凉爽，内芯透气不闷，图案融合风筝与水墨元素，设计更具东方美学，适合客厅/卧室/办公室使用。',
+    params: {
+      面料: '冰丝面料（夏季款）',
+      内芯: '透气纤维棉',
+      尺寸: '40×40cm/50×50cm/60×60cm',
+      工艺: '热转印印花，色彩牢固',
+      特性: '透气/凉爽/易清洗'
+    },
+    comments: [
+      {
+        id: 2001,
+        username: '夏日必备',
+        avatar: 'https://picsum.photos/40/40?random=39',
+        time: '2024-03-20',
+        content: '冰丝面料超凉爽，夏天靠起来太舒服了，透气性很好',
+        score: 5
+      },
+      {
+        id: 2002,
+        username: '中式美学爱好者',
+        avatar: 'https://picsum.photos/40/40?random=40',
+        time: '2024-03-18',
+        content: '水墨风格超有韵味，和家里装修很搭，尺寸也合适',
+        score: 4
+      }
+    ]
+  },
+  // 21. 冰箱贴1（飞鸢雅韵系列）
+  {
+    id: 21,
+    name: '冰箱贴1',
+    price: 25,
+    image: '../static/images/shop/3.“飞鸢雅韵”系列/冰箱贴1.png',
+    category: 'elegant',
+    categoryName: '飞鸢雅韵系列',
+    specs: [
+      { name: '软磁款', price: 25 },
+      { name: '硬磁款', price: 28 },
+      { name: '夜光款', price: 32 }
+    ],
+    desc: '飞鸢雅韵系列冰箱贴，软磁款更轻便，硬磁款磁吸更强，夜光款采用夜光材质，夜间可发光，图案以雅致风筝纹样为设计元素，色彩柔和，是特色文创小物。',
+    params: {
+      材质: '软磁/硬磁/夜光树脂（对应款式）',
+      尺寸: '7×5cm',
+      工艺: '浮雕彩绘/夜光涂层',
+      磁吸: '强磁吸附',
+      特色: '夜光款可蓄光8小时以上'
+    },
+    comments: [
+      {
+        id: 2101,
+        username: '夜光控',
+        avatar: 'https://picsum.photos/40/40?random=41',
+        time: '2024-01-15',
+        content: '夜光款超惊喜，晚上发光超好看，磁吸力也很强',
+        score: 5
+      },
+      {
+        id: 2102,
+        username: '文创小物爱好者',
+        avatar: 'https://picsum.photos/40/40?random=42',
+        time: '2024-01-12',
+        content: '浮雕工艺超棒，细节很到位，色彩很雅致',
+        score: 4
+      }
+    ]
+  },
+  // 22. 冰箱贴2（飞鸢雅韵系列）
+  {
+    id: 22,
+    name: '冰箱贴2',
+    price: 25,
+    image: '../static/images/shop/3.“飞鸢雅韵”系列/冰箱贴2.png',
+    category: 'elegant',
+    categoryName: '飞鸢雅韵系列',
+    specs: [
+      { name: '立体款', price: 25 },
+      { name: '平面款', price: 22 },
+      { name: '套装款（4枚）', price: 88 }
+    ],
+    desc: '飞鸢雅韵系列第二款冰箱贴，立体款采用3D打印工艺，更具层次感，平面款更轻薄，套装款含4种不同风筝纹样，设计更具东方韵味，适合收藏/送礼。',
+    params: {
+      材质: '树脂+磁铁',
+      尺寸: '6×6cm',
+      工艺: '3D打印/平面彩绘',
+      磁吸: '强力磁铁',
+      包装: '精美礼盒（套装款）'
+    },
+    comments: [
+      {
+        id: 2201,
+        username: '立体控',
+        avatar: 'https://picsum.photos/40/40?random=43',
+        time: '2024-02-18',
+        content: '3D打印工艺超赞，立体感十足，细节处理很好',
+        score: 5
+      },
+      {
+        id: 2202,
+        username: '礼盒采购',
+        avatar: 'https://picsum.photos/40/40?random=44',
+        time: '2024-02-15',
+        content: '套装款礼盒超精致，送朋友很有特色，反馈很好',
+        score: 4
+      }
+    ]
+  },
+  // 23. 手机气囊（飞鸢雅韵系列）
+  {
+    id: 23,
+    name: '手机气囊',
+    price: 35,
+    image: '../static/images/shop/3.“飞鸢雅韵”系列/手机气囊 .png',
+    category: 'elegant',
+    categoryName: '飞鸢雅韵系列',
+    specs: [
+      { name: '款式1', price: 35 },
+      { name: '款式2', price: 35 },
+      { name: '款式3', price: 35 }
+    ],
+    desc: '飞鸢雅韵系列手机气囊支架，采用可伸缩设计，可调节高度，材质为环保PC+TPU，粘贴牢固不损伤手机壳，图案融合风筝纹样，兼具实用与装饰性。',
+    params: {
+      材质: 'PC+TPU+3M背胶',
+      尺寸: '直径4cm',
+      工艺: 'UV印刷，耐磨不褪色',
+      功能: '伸缩支架/指环扣/车载磁吸',
+      特性: '可水洗重复使用'
+    },
+    comments: [
+      {
+        id: 2301,
+        username: '手机配件控',
+        avatar: 'https://picsum.photos/40/40?random=45',
+        time: '2024-03-10',
+        content: '伸缩很顺滑，粘贴很牢固，看视频超方便',
+        score: 5
+      },
+      {
+        id: 2302,
+        username: '文创爱好者',
+        avatar: 'https://picsum.photos/40/40?random=46',
+        time: '2024-03-08',
+        content: '图案设计超美，和手机壳很搭，性价比很高',
+        score: 4
+      }
+    ]
+  },
+  // 24. 帆布包1、2（纸鸢奇境系列）
+  {
+    id: 24,
+    name: '帆布包1、2',
+    price: 58,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/帆布包1、2.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '款式1（小号）', price: 58 },
+      { name: '款式1（大号）', price: 68 },
+      { name: '款式2（小号）', price: 58 },
+      { name: '款式2（大号）', price: 68 }
+    ],
+    desc: '纸鸢奇境系列帆布包，采用16安加厚帆布，耐磨耐用，肩带可调节，款式1为简约设计，款式2为印花设计，图案融合纸鸢奇境主题元素，容量大，适合日常出行。',
+    params: {
+      材质: '16安加厚帆布',
+      尺寸: '小号（30×35cm）/大号（40×45cm）',
+      工艺: '丝网印花，不掉色',
+      结构: '主仓+内贴袋',
+      肩带: '可调节帆布肩带'
+    },
+    comments: [
+      {
+        id: 2401,
+        username: '帆布包爱好者',
+        avatar: 'https://picsum.photos/40/40?random=47',
+        time: '2024-01-22',
+        content: '帆布超厚实，容量很大，日常通勤装电脑都没问题',
+        score: 5
+      },
+      {
+        id: 2402,
+        username: '出行必备',
+        avatar: 'https://picsum.photos/40/40?random=48',
+        time: '2024-01-20',
+        content: '款式2印花超好看，肩带调节很方便，性价比很高',
+        score: 4
+      }
+    ]
+  },
+  // 25. 帆布包3（纸鸢奇境系列）
+  {
+    id: 25,
+    name: '帆布包3',
+    price: 58,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/帆布包3.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '常规款', price: 58 },
+      { name: '加绒款', price: 68 },
+      { name: '防水款', price: 78 }
+    ],
+    desc: '纸鸢奇境系列第三款帆布包，常规款轻便透气，加绒款更保暖，防水款采用防泼水面料，图案设计更具童话感，适合学生/上班族/旅行使用。',
+    params: {
+      材质: '帆布/加绒帆布/防水帆布（对应款式）',
+      尺寸: '35×40cm',
+      工艺: '数码印花，色彩鲜艳',
+      容量: '可容纳14寸笔记本电脑',
+      特色: '防水款防泼水面料，雨天也能用'
+    },
+    comments: [
+      {
+        id: 2501,
+        username: '防水控',
+        avatar: 'https://picsum.photos/40/40?random=49',
+        time: '2024-02-22',
+        content: '防水款超实用，下雨天也不怕，面料很结实',
+        score: 5
+      },
+      {
+        id: 2502,
+        username: '学生党',
+        avatar: 'https://picsum.photos/40/40?random=50',
+        time: '2024-02-20',
+        content: '常规款超轻便，装课本正合适，图案超可爱',
+        score: 4
+      }
+    ]
+  },
+  // 26. 明信片（纸鸢奇境系列）
+  {
+    id: 26,
+    name: '明信片',
+    price: 12,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/明信片.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '单张款', price: 12 },
+      { name: '套装款（8张）', price: 88 },
+      { name: '带邮票款（单张）', price: 18 }
+    ],
+    desc: '纸鸢奇境系列明信片，采用300g艺术纸印刷，双面覆膜，图案以纸鸢奇境童话主题为设计元素，色彩梦幻，套装款含8种不同图案，带邮票款可直接邮寄。',
+    params: {
+      材质: '300g艺术纸+覆膜',
+      尺寸: '15×10cm（标准明信片尺寸）',
+      工艺: '高清四色印刷',
+      包装: '精美封套（套装款）',
+      特色: '带邮票款含中国邮政80分邮票'
+    },
+    comments: [
+      {
+        id: 2601,
+        username: '明信片爱好者',
+        avatar: 'https://picsum.photos/40/40?random=51',
+        time: '2024-03-25',
+        content: '纸张质感超棒，印刷很清晰，色彩超梦幻',
+        score: 5
+      },
+      {
+        id: 2602,
+        username: '集邮爱好者',
+        avatar: 'https://picsum.photos/40/40?random=52',
+        time: '2024-03-22',
+        content: '带邮票款超方便，直接寄给朋友，图案超好看',
+        score: 4
+      }
+    ]
+  },
+  // 27. 三折页（纸鸢奇境系列）
+  {
+    id: 27,
+    name: '三折页',
+    price: 20,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/三折页.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '基础款', price: 20 },
+      { name: '精装款', price: 28 },
+      { name: '套装款（5份）', price: 90 }
+    ],
+    desc: '纸鸢奇境系列三折页，采用157g铜版纸印刷，双面覆膜，展开后为纸鸢奇境主题插画，折叠后小巧便携，精装款含烫金工艺，套装款性价比更高。',
+    params: {
+      材质: '157g铜版纸+覆膜',
+      尺寸: '展开42×21cm/折叠14×21cm',
+      工艺: '四色印刷/烫金（精装款）',
+      内容: '纸鸢奇境主题插画+文创介绍',
+      包装: 'opp袋/精装盒（对应款式）'
+    },
+    comments: [
+      {
+        id: 2701,
+        username: '文创收藏者',
+        avatar: 'https://picsum.photos/40/40?random=53',
+        time: '2024-01-10',
+        content: '精装款烫金超精致，插画超美，值得收藏',
+        score: 5
+      },
+      {
+        id: 2702,
+        username: '宣传物料采购',
+        avatar: 'https://picsum.photos/40/40?random=54',
+        time: '2024-01-08',
+        content: '套装款性价比超高，印刷质量很好，推荐！',
+        score: 4
+      }
+    ]
+  },
+  // 28. 鼠标垫（纸鸢奇境系列）
+  {
+    id: 28,
+    name: '鼠标垫',
+    price: 35,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/鼠标垫.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '小号（25×20cm）', price: 35 },
+      { name: '中号（30×25cm）', price: 42 },
+      { name: '大号（80×30cm）', price: 58 }
+    ],
+    desc: '纸鸢奇境系列鼠标垫，采用橡胶防滑底+布面表层，手感顺滑，定位精准，小号适合办公，大号可作为桌垫使用，图案色彩鲜艳不褪色，适合办公/游戏使用。',
+    params: {
+      材质: '天然橡胶底+高密度布面',
+      尺寸: '25×20cm/30×25cm/80×30cm',
+      工艺: '热转印印花，不掉色',
+      特性: '防滑/防水/可水洗',
+      适用: '各类鼠标/办公/游戏'
+    },
+    comments: [
+      {
+        id: 2801,
+        username: '办公族',
+        avatar: 'https://picsum.photos/40/40?random=55',
+        time: '2024-02-10',
+        content: '中号尺寸正合适，鼠标移动超顺滑，防滑效果很好',
+        score: 5
+      },
+      {
+        id: 2802,
+        username: '游戏玩家',
+        avatar: 'https://picsum.photos/40/40?random=56',
+        time: '2024-02-08',
+        content: '大号桌垫超舒服，覆盖整个桌面，图案超好看',
+        score: 4
+      }
+    ]
+  },
+  // 29. 钥匙扣1（纸鸢奇境系列）
+  {
+    id: 29,
+    name: '钥匙扣1',
+    price: 20,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/钥匙扣1.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '水晶款', price: 20 },
+      { name: '滴胶款', price: 22 },
+      { name: '旋转款', price: 25 }
+    ],
+    desc: '纸鸢奇境系列钥匙扣，水晶款高透清晰，滴胶款耐磨防刮，旋转款可360°旋转，图案融合纸鸢奇境童话元素，设计更具童趣，搭配龙虾扣挂绳，便携实用。',
+    params: {
+      材质: '水晶/环氧树脂/ABS（对应款式）',
+      尺寸: '6cm',
+      工艺: '高清印刷/滴胶/旋转结构',
+      配件: '龙虾扣+彩色挂绳',
+      特性: '防摔/耐磨/色彩鲜艳'
+    },
+    comments: [
+      {
+        id: 2901,
+        username: '钥匙扣控',
+        avatar: 'https://picsum.photos/40/40?random=57',
+        time: '2024-03-05',
+        content: '旋转款超好玩，图案超萌，挂包包上超可爱',
+        score: 5
+      },
+      {
+        id: 2902,
+        username: '水晶爱好者',
+        avatar: 'https://picsum.photos/40/40?random=58',
+        time: '2024-03-02',
+        content: '水晶款超透亮，没有气泡，印刷很清晰',
+        score: 4
+      }
+    ]
+  },
+  // 30. 钥匙扣2（纸鸢奇境系列）
+  {
+    id: 30,
+    name: '钥匙扣2',
+    price: 20,
+    image: '../static/images/shop/4.“纸鸢奇境”系列/钥匙扣2.png',
+    category: 'wonderland',
+    categoryName: '纸鸢奇境系列',
+    specs: [
+      { name: '发光款', price: 20 },
+      { name: '发声款', price: 28 },
+      { name: '盲盒款', price: 25 }
+    ],
+    desc: '纸鸢奇境系列第二款钥匙扣，发光款内置LED灯，按压可发光，发声款内置音效芯片，盲盒款含隐藏款设计，更具收藏趣味，是儿童/年轻人喜爱的文创小物。',
+    params: {
+      材质: 'ABS+电子元件（发光/发声款）',
+      尺寸: '7cm',
+      工艺: '注塑+印刷+电子组装',
+      配件: '龙虾扣+挂绳',
+      电源: '纽扣电池（发光/发声款，可更换）'
+    },
+    comments: [
+      {
+        id: 3001,
+        username: '宝妈',
+        avatar: 'https://picsum.photos/40/40?random=59',
+        time: '2024-01-28',
+        content: '发光款孩子超喜欢，亮度适中，电池也耐用',
+        score: 5
+      },
+      {
+        id: 3002,
+        username: '盲盒爱好者',
+        avatar: 'https://picsum.photos/40/40?random=60',
+        time: '2024-01-25',
+        content: '盲盒款抽到了隐藏款，超惊喜，做工也很好',
+        score: 4
+      }
+    ]
+  }
+];
+
+    // 全局变量
+    let currentGoods = goods;
+    let currentDetail = null;
+    let isLoggedIn = false;
+    let cart = [];
+    let currentUsername = '';
+
+// 新增：订单数据
+let orders = [
+  {
+    id: 'order_1772711707574',
+    time: '2026/3/5下午 7:55:07',
+    status: '待付款',
+    statusColor: '#d32f2f',
+    items: [
+      {
+        name: '小鸢T恤',
+        price: 96,
+        quantity: 1,
+        image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢T恤.png'
+      }
+    ],
+    totalPrice: 96
+  },
+  {
+    id: 'order_1772002099813',
+    time: '2026/2/25下午 2:48:19',
+    status: '已完成',
+    statusColor: '#388e3c',
+    items: [
+      {
+        name: '小鸢手卡',
+        price: 30,
+        quantity: 1,
+        image: '../static/images/shop/1.人物IP衍生文创/小鸢/小鸢手卡.jpg'
+      }
+    ],
+    totalPrice: 30
+  }
+];
+// 收藏列表
+let collections = [
+  // 初始化一些收藏商品（可以根据需要调整）
+  { ...goods[0], collectTime: '2026-03-01' }, // 小鸢T恤
+  { ...goods[13], collectTime: '2026-03-03' }, // 冰箱贴（鸢都赐福系列）
+  { ...goods[24], collectTime: '2026-03-05' }  // 帆布包1、2（纸鸢奇境系列）
+];
+
+// 设置配置项
+let settings = {
+  notification: true, // 消息通知
+  autoLogin: false,   // 自动登录
+  cacheClear: true,   // 缓存清理开关
+  theme: 'default'    // 主题设置
+};
+    // 页面切换核心函数
+function switchPage(pageId) {
+  // 隐藏所有页面
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+  // 取消所有导航选中状态
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  // 显示目标页面
+  document.getElementById(pageId).classList.add('active');
+  // 选中对应导航（仅首页/购物车/我的）
+  if (pageId === 'homePage') {
+    document.getElementById('navHome').classList.add('active');
+  } else if (pageId === 'cartPage') {
+    document.getElementById('navCart').classList.add('active');
+    renderCart(); // 切换到购物车时重新渲染
+  } else if (pageId === 'minePage') {
+    document.getElementById('navMine').classList.add('active');
+  }
+  // 其他页面（详情/订单/收藏/设置）不选中底部导航
+}
+
+    // 跳转到商品详情页
+function goDetail(good) {
+  currentDetail = good;
+  // 填充基础数据
+  document.getElementById('detailImg').src = good.image;
+  document.getElementById('detailImg').onerror = function() {
+    this.src = 'https://picsum.photos/500/500';
+  };
+  document.getElementById('detailName').textContent = good.name;
+  document.getElementById('detailPrice').textContent = `¥${good.price}`;
+
+  // 新增：渲染规格选择
+  renderSpecs(good.specs);
+  // 新增：渲染商品介绍
+  document.getElementById('detailDesc').textContent = good.desc;
+  // 新增：渲染产品信息
+  renderParams(good.params);
+  // 新增：渲染用户评论
+  renderComments(good.comments);
+  // 新增：初始化选项卡（默认显示商品介绍）
+  switchDetailTab('descTab');
+   // 新增：渲染促销信息
+  renderPromoInfo(good);
+
+  // 切换到详情页
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById('detailPage').classList.add('active');
+}
+// 渲染规格选择
+function renderSpecs(specs) {
+  const container = document.getElementById('specSelect');
+  container.innerHTML = '';
+  specs.forEach(spec => {
+    const item = document.createElement('div');
+    item.className = 'spec-item';
+    if (spec.name === specs[0].name) { // 默认选中第一个规格
+      item.classList.add('active');
+      currentDetail.selectedSpec = spec; // 初始化选中的规格
+    }
+    item.textContent = spec.name;
+    item.onclick = () => selectSpec(spec); // 点击切换规格
+    container.appendChild(item);
+  });
+}
+
+// 渲染产品信息
+function renderParams(params) {
+  const container = document.getElementById('paramsContainer');
+  let paramsHtml = '';
+  for (const key in params) {
+    if (params.hasOwnProperty(key)) {
+      paramsHtml += `
+        <div style="margin-bottom: 8px;">
+          <strong>${key}：</strong>${params[key]}
+        </div>
+      `;
+    }
+  }
+  container.innerHTML = paramsHtml;
+}
+// 渲染促销与物流信息
+function renderPromoInfo(good) {
+  const container = document.getElementById('promoInfo');
+  
+  // 生成随机数据（模拟电商平台信息）
+  const sold = Math.floor(Math.random() * 300) + 200; // 已售200-500件
+  const reviewTags = ['外皮老好看', '质感超棒', '颜值很高', '很有质感', '设计很用心'];
+  const randomReview = reviewTags[Math.floor(Math.random() * reviewTags.length)];
+  const added = Math.floor(Math.random() * 200) + 100; // 加购100-300人
+  const originalPrice = good.price;
+  const discountPrice = (originalPrice * (Math.random() * 0.2 + 0.2)).toFixed(2); // 券后价为原价的20%-40%
+  const couponRule = `满${Math.ceil(originalPrice * 0.8)}减${Math.floor(originalPrice * 0.5)}`; // 满减规则
+  const goldCoin = (Math.random() * 0.4 + 0.1).toFixed(2); // 淘金币抵扣0.1-0.5元
+  const cities = ['北京', '上海', '广州', '深圳', '杭州', '南京', '成都', '重庆', '武汉', '西安'];
+  const fromCity = '浙江金华';
+  const toCity = cities[Math.floor(Math.random() * cities.length)]; // 随机收货城市
+
+  // 填充HTML内容
+  container.innerHTML = `
+    <div class="promo-row">
+      <span>已售 ${sold}+</span>
+      <span>多人评价"${randomReview}"</span>
+      <span>超${added}人加购</span>
+    </div>
+    <div class="promo-row" style="margin: 12px 0;">
+      <span class="promo-badge">券后</span>
+      <span class="price-current">¥${discountPrice}</span>
+      <span class="price-original">¥${originalPrice}</span>
+      <span class="deadline">3月9日24点结束</span>
+    </div>
+    <div class="promo-row">
+      <span class="coupon">${couponRule}</span>
+      <span class="gold-coin">淘金币已抵${goldCoin}元</span>
+    </div>
+    <div class="promo-row delivery">
+      <i class="fas fa-calendar-check"></i>
+      <span>预计明天发货｜承诺48小时内发货</span>
+    </div>
+    <div class="promo-row delivery">
+      <i class="fas fa-shipping-fast"></i>
+      <span>快递: 免运费 ${fromCity} 至 ${toCity}</span>
+    </div>
+    <div class="promo-row return">
+      <i class="fas fa-undo"></i>
+      <span>7天无理由退货 极速退款</span>
+    </div>
+  `;
+}
+
+// 详情页选项卡切换
+function switchDetailTab(tabId) {
+  // 隐藏所有内容
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  // 取消所有选项卡激活状态
+  document.querySelectorAll('.detail-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  // 显示目标内容
+  document.getElementById(tabId).classList.add('active');
+  // 激活对应选项卡
+  document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+}
+// 选择规格
+function selectSpec(spec) {
+  // 更新当前选中的规格和价格
+  currentDetail.selectedSpec = spec;
+  document.getElementById('detailPrice').textContent = `¥${spec.price}`;
+  // 高亮选中的规格
+  document.querySelectorAll('.spec-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.textContent === spec.name) {
+      item.classList.add('active');
+    }
+  });
+}
+
+// 数量加减
+function changeQuantity(delta) {
+  const input = document.querySelector('.quantity-input');
+  let quantity = parseInt(input.value) + delta;
+  if (quantity < 1) quantity = 1; // 最小值为1
+  input.value = quantity;
+}
+// 渲染用户评论
+function renderComments(comments) {
+  const container = document.getElementById('commentContainer');
+  if (comments.length === 0) {
+    container.innerHTML = '<p>暂无评论，快来抢沙发吧~</p>';
+    return;
+  }
+  let commentHtml = '';
+  comments.forEach(comment => {
+    commentHtml += `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-avatar">
+            <img src="${comment.avatar}" alt="${comment.username}" onerror="this.src='https://picsum.photos/40/40'">
+          </div>
+          <div class="comment-info">
+            <div class="comment-name">${comment.username}</div>
+            <div class="comment-time">${comment.time}</div>
+          </div>
+        </div>
+        <div class="comment-content">${comment.content}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = commentHtml;
+}
+
+    // 初始化轮播图
+// 初始化轮播图 - 优化版（支持手动切换+自动轮播）
+function initCarousel() {
+  const inner = document.getElementById('carouselInner');
+  const indicators = document.getElementById('indicators');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const items = inner.children;
+  let currentSlide = 0;
+  let autoPlayTimer; // 自动轮播定时器
+
+  // 生成指示器
+  for (let i = 0; i < items.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'indicator';
+    if (i === 0) dot.classList.add('active');
+    dot.onclick = () => goToSlide(i);
+    indicators.appendChild(dot);
+  }
+
+  // 核心切换函数
+  function goToSlide(index) {
+    // 边界处理
+    if (index < 0) index = items.length - 1;
+    if (index >= items.length) index = 0;
+    
+    currentSlide = index;
+    // 切换轮播图
+    inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    // 更新指示器状态
+    document.querySelectorAll('.indicator').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
+    });
+    // 重置自动轮播定时器
+    resetAutoPlay();
+  }
+
+  // 自动轮播函数
+  function autoPlay() {
+    autoPlayTimer = setInterval(() => {
+      goToSlide(currentSlide + 1);
+    }, 4000);
+  }
+
+  // 重置自动轮播
+  function resetAutoPlay() {
+    clearInterval(autoPlayTimer);
+    autoPlay();
+  }
+
+  // 绑定左右箭头事件
+  prevBtn.onclick = () => goToSlide(currentSlide - 1);
+  nextBtn.onclick = () => goToSlide(currentSlide + 1);
+
+  // 鼠标悬停时暂停自动轮播，离开时恢复
+  const carousel = document.getElementById('carousel');
+  carousel.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
+  carousel.addEventListener('mouseleave', autoPlay);
+
+  // 启动自动轮播
+  autoPlay();
+}
+
+    // 渲染商品列表
+    function renderGoods(list) {
+      const container = document.getElementById('goodsContainer');
+      container.innerHTML = '';
+      list.forEach(good => {
+        const card = document.createElement('div');
+        card.className = 'goods-card';
+        card.onclick = () => goDetail(good); // 点击商品跳转到详情页
+        card.innerHTML = `
+          <img class="goods-img" src="${good.image}" alt="${good.name}" onerror="this.src='https://picsum.photos/200/180'">
+          <div class="goods-info">
+            <div class="goods-name">${good.name}</div>
+            <div class="goods-price">¥${good.price}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 分类切换
+    function initCategory() {
+      const items = document.querySelectorAll('.category-item');
+      items.forEach(item => {
+        item.onclick = () => {
+          items.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          const category = item.dataset.category;
+          if (category === 'all') {
+            currentGoods = goods;
+          } else {
+            currentGoods = goods.filter(g => g.category === category);
+          }
+          renderGoods(currentGoods);
+        };
+      });
+    }
+
+// 购物车数据结构扩展（增加选中状态和数量）
+function initCartItem(item) {
+  return {
+    ...item,
+    selected: false,
+    quantity: 1
+  };
+}
+
+// 全选/取消全选
+function toggleSelectAll() {
+  const isChecked = document.getElementById('selectAll').checked;
+  cart.forEach(item => item.selected = isChecked);
+  updateCheckoutState();
+}
+
+// 更新结算状态
+// 更新结算状态（修改原有函数）
+function updateCheckoutState() {
+  const selectedItems = cart.filter(item => item.selected);
+  const totalPrice = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  document.getElementById('cartTotalCount').textContent = cart.length;
+  document.getElementById('checkoutTotalPrice').textContent = `¥${totalPrice.toFixed(2)}`;
+  
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  if (selectedItems.length > 0) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.style.background = '#ff6600';
+    // 确保按钮可点击时绑定事件（防御性编程）
+    checkoutBtn.style.cursor = 'pointer';
+  } else {
+    checkoutBtn.disabled = true;
+    checkoutBtn.style.background = '#ddd';
+    checkoutBtn.style.cursor = 'not-allowed';
+  }
+}
+// 结算处理函数 - 新增核心函数
+function checkout() {
+  // 1. 检查是否有选中的商品
+  const selectedItems = cart.filter(item => item.selected);
+  if (selectedItems.length === 0) {
+    alert('请先选择要结算的商品');
+    return;
+  }
+  
+  // 2. 计算选中商品的总价
+  const totalPrice = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  // 3. 创建唯一订单ID和格式化时间
+  const orderId = 'order_' + Date.now(); // 时间戳生成唯一ID
+  const now = new Date();
+  // 格式化时间（示例：2026/3/6下午 8:30:45）
+  const timeStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}${now.getHours() >= 12 ? '下午' : '上午'} ${now.getHours() % 12 || 12}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+  
+  // 4. 构建订单商品列表
+  const orderItems = selectedItems.map(item => ({
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+    image: item.image
+  }));
+  
+  // 5. 创建新订单对象
+  const newOrder = {
+    id: orderId,
+    time: timeStr,
+    status: '已完成', // 结算后直接标记为已完成
+    statusColor: '#388e3c',
+    items: orderItems,
+    totalPrice: totalPrice
+  };
+  
+  // 6. 将新订单添加到订单列表（加到最前面，最新订单优先显示）
+  orders.unshift(newOrder);
+  
+  // 7. 弹出支付成功提示框
+  alert(`✅ 支付成功！
+订单号：${orderId}
+商品数量：${selectedItems.length} 件
+支付金额：¥${totalPrice.toFixed(2)}
+感谢您的购买！`);
+  
+  // 8. 从购物车中移除已结算的商品
+  cart = cart.filter(item => !item.selected);
+  
+  // 9. 重新渲染购物车（清空选中商品）和订单列表
+  renderCart();
+}
+
+// 给结算按钮绑定点击事件 - 新增
+document.getElementById('checkoutBtn').addEventListener('click', checkout);
+// 渲染购物车
+function renderCart() {
+  const container = document.getElementById('cartItemsList');
+  if (!isLoggedIn) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-shopping-cart" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>请先登录查看购物车</p>
+      </div>
+    `;
+    return;
+  }
+  if (cart.length === 0) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-shopping-cart" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>购物车空空如也~</p>
+        <p style="margin-top: 10px; color: var(--primary); cursor: pointer;" onclick="switchPage('homePage')">去首页逛逛</p>
+      </div>
+    `;
+    return;
+  }
+
+  let cartHtml = '';
+  cart.forEach((item, index) => {
+    cartHtml += `
+      <div class="cart-item-new">
+        <input type="checkbox" class="cart-item-checkbox" 
+               ${item.selected ? 'checked' : ''} 
+               onchange="cart[${index}].selected = this.checked; updateCheckoutState();">
+        <img class="cart-item-img" src="${item.image}" alt="${item.name}" onerror="this.src='https://picsum.photos/80/80'">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-desc">${item.specs ? item.specs[0].name : '默认规格'}</div>
+          <div class="cart-item-price">
+            ¥${item.price}
+            <span class="cart-item-original-price">¥${(item.price * 1.2).toFixed(2)}</span>
+          </div>
+        </div>
+        <div class="cart-item-quantity">
+          <button class="quantity-btn" onclick="changeCartQuantity(${index}, -1)">-</button>
+          <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="cart[${index}].quantity = parseInt(this.value); updateCheckoutState();">
+          <button class="quantity-btn" onclick="changeCartQuantity(${index}, 1)">+</button>
+        </div>
+        <div class="cart-item-actions">
+          <div class="cart-item-action" onclick="moveToCollectionItem(${index})">移入收藏</div>
+          <div class="cart-item-action" onclick="deleteCartItem(${index})">删除</div>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = cartHtml;
+  updateCheckoutState();
+}
+
+// 购物车数量调整
+function changeCartQuantity(index, delta) {
+  let quantity = cart[index].quantity + delta;
+  if (quantity < 1) quantity = 1;
+  cart[index].quantity = quantity;
+  renderCart();
+}
+
+// 移入收藏（单个商品）
+function moveToCollectionItem(index) {
+  alert(`已将 "${cart[index].name}" 移入收藏`);
+  deleteCartItem(index);
+}
+
+// 移入收藏（批量）
+function moveToCollection() {
+  const selectedItems = cart.filter(item => item.selected);
+  if (selectedItems.length === 0) {
+    alert('请先选择商品');
+    return;
+  }
+  alert(`已将 ${selectedItems.length} 件商品移入收藏`);
+  cart = cart.filter(item => !item.selected);
+  renderCart();
+}
+
+// 删除选中商品
+function deleteSelectedItems() {
+  const selectedItems = cart.filter(item => item.selected);
+  if (selectedItems.length === 0) {
+    alert('请先选择商品');
+    return;
+  }
+  if (confirm(`确定要删除 ${selectedItems.length} 件商品吗？`)) {
+    cart = cart.filter(item => !item.selected);
+    renderCart();
+  }
+}
+
+// 修改加入购物车函数，使用新的数据结构
+function addToCart() {
+  if (!isLoggedIn) {
+    showLogin();
+    return;
+  }
+  const isExist = cart.some(item => item.id === currentDetail.id);
+  if (isExist) {
+    alert('该商品已在购物车中~');
+    return;
+  }
+  cart.push(initCartItem(currentDetail));
+  alert('已加入购物车！');
+  renderCart();
+}
+
+
+    // 删除购物车商品
+    function deleteCartItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    // 登录相关
+    function showLogin() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+    function closeLogin() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username && password) {
+        isLoggedIn = true;
+        currentUsername = username;
+        // 更新我的页面用户名
+        document.getElementById('userName').textContent = username;
+        document.querySelector('.mine-login-tip').style.display = 'none';
+        alert('登录成功！欢迎，' + username);
+        closeLogin();
+        renderCart(); // 登录后重新渲染购物车
+      } else {
+        alert('请输入用户名和密码');
+      }
+    }
+
+
+    // 立即购买
+    function buyNow() {
+      if (!isLoggedIn) {
+        showLogin();
+        return;
+      }
+      alert(`成功购买 ${currentDetail.name}，共 ¥${currentDetail.price}\n订单已生成，感谢您的购买！`);
+    }
+// 渲染订单列表
+function renderOrders(status = 'all') {
+  const container = document.getElementById('ordersList');
+  if (!isLoggedIn) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-shopping-bag" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>请先登录查看订单</p>
+      </div>
+    `;
+    return;
+  }
+
+  let filteredOrders = orders;
+  if (status !== 'all') {
+    filteredOrders = orders.filter(order => {
+      if (status === 'pending') return order.status === '待付款';
+      if (status === 'shipping') return order.status === '待发货';
+      if (status === 'completed') return order.status === '已完成';
+      return true;
+    });
+  }
+
+  if (filteredOrders.length === 0) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-shopping-bag" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>暂无订单~</p>
+        <p style="margin-top: 10px; color: var(--primary); cursor: pointer;" onclick="switchPage('homePage')">去首页逛逛</p>
+      </div>
+    `;
+    return;
+  }
+
+  let ordersHtml = '';
+  filteredOrders.forEach(order => {
+    let itemsHtml = '';
+    order.items.forEach(item => {
+      itemsHtml += `
+        <div class="order-item-goods">
+          <img class="order-item-img" src="${item.image}" alt="${item.name}" onerror="this.src='https://picsum.photos/60/60'">
+          <div class="order-item-info">
+            <div class="order-item-name">${item.name}</div>
+            <div class="order-item-price">¥${item.price} × ${item.quantity}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    let actionHtml = '';
+    if (order.status === '待付款') {
+      actionHtml = `
+        <div class="order-actions">
+          <button class="order-btn order-btn-pay" onclick="payOrder('${order.id}')">立即支付</button>
+          <button class="order-btn order-btn-cancel" onclick="cancelOrder('${order.id}')">取消订单</button>
+        </div>
+      `;
+    } else if (order.status === '已完成') {
+      actionHtml = `
+        <div class="order-actions">
+          <button class="order-btn order-btn-completed">订单已完成</button>
+        </div>
+      `;
+    }
+
+    ordersHtml += `
+      <div class="order-item">
+        <div class="order-header">
+          <div>
+            <div class="order-id">订单ID: ${order.id}</div>
+            <div class="order-time">${order.time}</div>
+          </div>
+          <div class="order-status" style="color: ${order.statusColor};">${order.status}</div>
+        </div>
+        <div class="order-items">
+          ${itemsHtml}
+        </div>
+        <div class="order-footer">
+          <div class="order-total">
+            订单总价: <span class="order-total-price">¥${order.totalPrice}</span>
+          </div>
+          ${actionHtml}
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = ordersHtml;
+}
+
+// 支付订单
+function payOrder(orderId) {
+  const order = orders.find(o => o.id === orderId);
+  if (order) {
+    alert(`成功支付订单 ${orderId}，共 ¥${order.totalPrice}`);
+    order.status = '已完成';
+    order.statusColor = '#388e3c';
+    renderOrders();
+  }
+}
+
+// 取消订单
+function cancelOrder(orderId) {
+  if (confirm(`确定要取消订单 ${orderId} 吗？`)) {
+    orders = orders.filter(o => o.id !== orderId);
+    renderOrders();
+  }
+}
+
+// 初始化订单选项卡
+function initOrderTabs() {
+  const tabs = document.querySelectorAll('.order-tab');
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const status = tab.dataset.status;
+      renderOrders(status);
+    };
+  });
+}
+// 切换到订单页面
+function switchToOrdersPage() {
+  switchPage('ordersPage');
+  renderOrders();
+  initOrderTabs();
+}
+// 渲染收藏列表
+function renderCollections() {
+  const container = document.getElementById('collectionContainer');
+  if (!isLoggedIn) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-heart" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>请先登录查看收藏</p>
+      </div>
+    `;
+    return;
+  }
+  if (collections.length === 0) {
+    container.innerHTML = `
+      <div class="cart-empty" style="padding: 50px;">
+        <i class="fas fa-heart" style="font-size: 50px; margin-bottom: 15px; color: #ddd;"></i>
+        <p>暂无收藏商品~</p>
+        <p style="margin-top: 10px; color: var(--primary); cursor: pointer;" onclick="switchPage('homePage')">去首页逛逛</p>
+      </div>
+    `;
+    return;
+  }
+  container.innerHTML = '';
+  collections.forEach(good => {
+    const card = document.createElement('div');
+    card.className = 'goods-card';
+    card.onclick = () => goDetail(good);
+    card.innerHTML = `
+      <img class="goods-img" src="${good.image}" alt="${good.name}" onerror="this.src='https://picsum.photos/200/180'">
+      <div class="goods-info">
+        <div class="goods-name">${good.name}</div>
+        <div class="goods-price">¥${good.price}</div>
+        <div style="font-size: 12px; color: #999; margin-top: 4px;">
+          收藏时间：${good.collectTime}
+        </div>
+        <button style="
+          background: #ff4444; 
+          color: white; 
+          border: none; 
+          border-radius: 4px; 
+          padding: 4px 8px; 
+          font-size: 12px; 
+          margin-top: 8px;
+          cursor: pointer;
+        " onclick="event.stopPropagation(); removeFromCollection(${good.id})">取消收藏</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// 添加到收藏
+function addToCollection() {
+  if (!isLoggedIn) {
+    showLogin();
+    return;
+  }
+  const isExist = collections.some(item => item.id === currentDetail.id);
+  if (isExist) {
+    alert('该商品已在收藏中~');
+    return;
+  }
+  collections.push({
+    ...currentDetail,
+    collectTime: new Date().toISOString().split('T')[0] // 格式化日期为YYYY-MM-DD
+  });
+  alert('收藏成功！');
+  renderCollections();
+}
+
+// 从收藏移除
+function removeFromCollection(goodsId) {
+  if (confirm('确定要取消收藏该商品吗？')) {
+    collections = collections.filter(item => item.id !== goodsId);
+    renderCollections();
+  }
+}
+
+// 切换到收藏页面
+function switchToCollectionPage() {
+  switchPage('collectionPage');
+  renderCollections();
+}
+// 切换设置开关
+function toggleSetting(settingKey) {
+  settings[settingKey] = !settings[settingKey];
+  // 更新页面显示
+  if (settingKey === 'notification') {
+    document.getElementById('notificationStatus').textContent = settings.notification ? '开启' : '关闭';
+  } else if (settingKey === 'autoLogin') {
+    document.getElementById('autoLoginStatus').textContent = settings.autoLogin ? '开启' : '关闭';
+  }
+  alert(`${settingKey === 'notification' ? '消息通知' : '自动登录'}已${settings[settingKey] ? '开启' : '关闭'}`);
+}
+
+// 显示修改密码弹窗
+function showChangePassword() {
+  document.getElementById('changePwdModal').style.display = 'flex';
+}
+
+// 关闭修改密码弹窗
+function closeChangePassword() {
+  document.getElementById('changePwdModal').style.display = 'none';
+}
+
+// 修改密码
+function changePassword() {
+  const oldPwd = document.getElementById('oldPwd').value;
+  const newPwd = document.getElementById('newPwd').value;
+  const confirmPwd = document.getElementById('confirmPwd').value;
+  
+  if (!oldPwd || !newPwd || !confirmPwd) {
+    alert('请填写所有密码字段');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    alert('新密码和确认密码不一致');
+    return;
+  }
+  if (newPwd.length < 6) {
+    alert('新密码长度不能少于6位');
+    return;
+  }
+  
+  alert('密码修改成功！请重新登录');
+  closeChangePassword();
+  logout(); // 修改密码后退出登录
+}
+
+// 清除缓存
+function clearCache() {
+  if (confirm('确定要清除本地缓存吗？这将清空购物车和收藏（仅演示）')) {
+    // 模拟清除缓存
+    cart = [];
+    collections = [];
+    renderCart();
+    renderCollections();
+    alert('缓存已清除！');
+  }
+}
+
+// 退出登录
+function logout() {
+  if (confirm('确定要退出登录吗？')) {
+    isLoggedIn = false;
+    currentUsername = '';
+    document.getElementById('userName').textContent = '请先登录';
+    document.querySelector('.mine-login-tip').style.display = 'block';
+    switchPage('minePage');
+    renderCart();
+    renderCollections();
+    alert('已成功退出登录');
+  }
+}
+
+// 切换到设置页面
+function switchToSettingsPage() {
+  switchPage('settingsPage');
+  // 更新设置状态显示
+  document.getElementById('notificationStatus').textContent = settings.notification ? '开启' : '关闭';
+  document.getElementById('autoLoginStatus').textContent = settings.autoLogin ? '开启' : '关闭';
+}
+    // 初始化
+window.onload = function() {
+  // 初始化购物车数据
+  cart = cart.map(item => initCartItem(item));
+  
+  initCarousel();
+  initCategory();
+  renderGoods(goods);
+  renderCart();
+  renderCollections(); // 新增：初始化收藏列表
+  document.querySelectorAll('.detail-tab').forEach(tab => {
+    tab.onclick = function() {
+      const tabId = this.dataset.tab;
+      switchDetailTab(tabId);
+    };
+  });
+};
+  </script>
+</body>
+</html>

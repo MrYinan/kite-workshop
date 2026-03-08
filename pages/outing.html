@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>踏青 - 潍坊风筝非遗研学路线</title>
+  <!-- 引入字体图标（和参考页面一致） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- 引入思源宋体（和参考页面完全一致） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== 全局基础样式（统一为参考页面的字体和配色） ========== */
+    :root {
+      /* 替换为参考页面的配色体系 */
+      --kite-beige: #F5F0E8;    /* 米纸色（原bg-color） */
+      --kite-green: #4A7B60;    /* 青竹绿（主色） */
+      --kite-brown: #8C6A48;    /* 赭石棕（辅助色） */
+      --kite-light: #E8DCC8;    /* 浅卡其（边框/阴影） */
+      --shadow-light: 0 2px 10px rgba(74, 123, 96, 0.1); /* 轻阴影（适配新主色） */
+      --shadow-heavy: 0 8px 25px rgba(74, 123, 96, 0.2); /* 重阴影（适配新主色） */
+      /* 宣纸纹理背景（保留原有纹理，颜色适配新体系） */
+      --texture-bg: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23F5F0E8"/><path d="M0,0 L200,200 M200,0 L0,200" stroke="%23E8DCC8" stroke-width="0.3" opacity="0.2"/><path d="M0,50 L200,50 M0,100 L200,100 M0,150 L200,150" stroke="%23E8DCC8" stroke-width="0.2" opacity="0.15"/><path d="M50,0 L50,200 M100,0 L100,200 M150,0 L150,200" stroke="%23E8DCC8" stroke-width="0.2" opacity="0.15"/></svg>');
+    }
+
+    /* 全局重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 页面基础样式（统一为参考页面的思源宋体） */
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      /* 核心：和参考页面完全一致的字体家族 */
+      font-family: "Noto Serif SC", "STSong", "SimSun", serif;
+      background-color: var(--kite-beige); /* 米纸色 */
+      background-image: var(--texture-bg); /* 全局宣纸纹理 */
+      background-repeat: repeat;
+      color: var(--kite-brown); /* 全局文字色 */
+      /* 关键：移除body的默认margin/padding，确保背景图全屏 */
+      margin: 0;
+      padding: 0;
+      /* 关键：设置body为relative，让fixed的背景图有参考 */
+      position: relative;
+      z-index: 0;
+    }
+
+    /* ========== 导航栏美化（适配新配色和字体） ========== */
+    .g-nav {
+      display: flex;
+      align-items: center;
+      padding: 18px 20px;
+      background-color: rgba(255, 255, 255, 0.98);
+      background-image: var(--texture-bg);
+      box-shadow: var(--shadow-heavy);
+      position: relative;
+      z-index: 10;
+      border-bottom: 2px solid var(--kite-light); /* 浅卡其边框 */
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      color: var(--kite-brown); /* 赭石棕文字 */
+      font-size: 16px;
+      text-decoration: none;
+      margin-right: 20px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      font-weight: 500; /* 参考页面的字体权重 */
+    }
+
+    .back-btn:hover {
+      color: var(--kite-green); /* 青竹绿hover */
+      background-color: rgba(74, 123, 96, 0.1); /* 青竹绿浅背景 */
+      border-color: var(--kite-light); /* 浅卡其边框 */
+      transform: translateX(-2px);
+    }
+
+    .back-btn i {
+      margin-right: 8px;
+      font-size: 18px;
+    }
+
+    .nav-title {
+      /* 核心：统一字体，保留原有字号和间距 */
+      font-family: "Noto Serif SC", "STSong", "SimSun", serif;
+      font-size: 22px;
+      font-weight: 700; /* 参考页面的bold权重 */
+      color: var(--kite-brown); /* 赭石棕 */
+      flex: 1;
+      text-align: center;
+      margin-left: -40px; /* 抵消返回按钮宽度 */
+      letter-spacing: 2px; /* 参考页面的字间距风格 */
+      text-shadow: 1px 1px 2px rgba(74, 123, 96, 0.1);
+    }
+
+    /* ========== 核心容器美化 ========== */
+    /* 最外层容器 */
+    .outing-container {
+      position: relative;
+      min-height: calc(100vh - 80px); /* 适配导航栏高度 */
+      box-sizing: border-box;
+      z-index: 1; /* 确保容器层级高于背景图 */
+    }
+
+    /* 背景图片（保留修复后的核心样式） */
+    .bg-img {
+      position: fixed !important; /* 强制fixed定位 */
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important; /* 强制全屏宽度 */
+      height: 100vh !important; /* 强制全屏高度 */
+      z-index: -9999 !important; /* 极低层级，确保在所有内容下方 */
+      object-fit: cover !important; /* 强制覆盖 */
+      filter: brightness(1); /* 参考页面的亮度设置 */
+      opacity: 0.95 !important;
+      display: block !important; /* 移除img默认的inline样式空隙 */
+      background-color: #000; /* 兜底，图片加载失败时能看到区域 */
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* 内容容器（居中+透纹理） */
+    .content-wrapper {
+      min-height: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      background-color: transparent !important;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2; /* 确保内容在背景图上方 */
+    }
+
+    /* 古风标题（适配新配色） */
+    .title-gufeng {
+      font-family: "Noto Serif SC", "STSong", "SimSun", serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--kite-brown);
+      text-align: center;
+      margin: 0 auto 30px;
+      background-color: rgba(255, 255, 255, 0.9);
+      background-image: var(--texture-bg);
+      padding: 12px 30px;
+      border-radius: 12px;
+      display: block;
+      border: 2px solid var(--kite-light);
+      box-shadow: var(--shadow-light);
+      letter-spacing: 3px;
+    }
+
+    /* ========== 路线列表+卡片美化（适配新配色和字体） ========== */
+    .outing-list {
+      display: flex;
+      flex-direction: column;
+      gap: 25px; /* 加大间距，提升呼吸感 */
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    /* 路线卡片（适配新配色，保留原有样式） */
+    .outing-item {
+      background-color: rgba(255, 255, 255, 0.95);
+      background-image: var(--texture-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow-light);
+      border: 2px solid var(--kite-light); /* 浅卡其边框 */
+      transition: all 0.4s ease; /* 慢动画更丝滑 */
+      cursor: pointer;
+      transform: translateY(0);
+      position: relative;
+      /* 做旧边角装饰（适配新主色） */
+      box-shadow: 5px 5px 0 rgba(74, 123, 96, 0.1), inset 0 0 10px rgba(74, 123, 96, 0.05);
+    }
+
+    /* 卡片hover效果（适配新配色） */
+    .outing-item:hover {
+      transform: translateY(-8px) rotate(0.5deg);
+      box-shadow: var(--shadow-heavy), 8px 8px 0 rgba(74, 123, 96, 0.2);
+    }
+
+    /* 移动端点击反馈 */
+    .outing-item:active {
+      opacity: 0.95;
+      transform: translateY(-4px) scale(0.98);
+    }
+
+    /* 路线图片（适配新边框） */
+    .route-img {
+      width: 100%;
+      height: auto;
+      min-height: 180px; /* 加高图片，提升视觉占比 */
+      object-fit: cover;
+      border-bottom: 2px solid var(--kite-light); /* 浅卡其边框 */
+      transition: all 0.4s ease;
+    }
+
+    .outing-item:hover .route-img {
+      transform: scale(1.02); /* 图片轻微放大 */
+    }
+
+    /* 路线名称（核心：统一字体，适配新配色） */
+    .route-name {
+      padding: 15px 25px 10px;
+      font-family: "Noto Serif SC", "STSong", "SimSun", serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--kite-brown); /* 赭石棕 */
+      border-bottom: 1px dashed var(--kite-light); /* 浅卡其虚线 */
+      letter-spacing: 1px;
+    }
+
+    /* 路线描述（核心：统一字体，适配新配色） */
+    .route-desc {
+      padding: 10px 25px 20px;
+      font-size: 16px;
+      color: var(--kite-brown); /* 赭石棕（参考页面的文字色） */
+      line-height: 1.8;
+      font-weight: 400; /* 参考页面的常规权重 */
+    }
+
+    /* ========== 详情页弹窗（适配新配色和字体） ========== */
+    .detail-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      /* 背景纹理+模糊，提升高级感（适配新配色） */
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" opacity="0.1"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%234A7B60" stroke-width="1" opacity="0.1"/></svg>');
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+      backdrop-filter: blur(8px); /* 背景模糊，突出卷轴 */
+    }
+
+    /* 卷轴容器（适配新配色） */
+    .scroll-container {
+      position: relative;
+      max-width: 800px;
+      max-height: 90vh;
+      background: var(--kite-beige); /* 米纸色 */
+      background-image: var(--texture-bg);
+      border-radius: 18px;
+      box-shadow: 0 15px 60px rgba(0,0,0,0.4), 0 0 0 3px var(--kite-brown), inset 0 0 30px rgba(74, 123, 96, 0.05);
+      overflow: hidden;
+      animation: scrollIn 0.6s ease-out; /* 卷轴展开动画 */
+      margin: 20px 0;
+    }
+
+    /* 卷轴顶部装饰（适配新配色） */
+    .scroll-top {
+      height: 50px;
+      background: linear-gradient(to bottom, #A88C68, #C8B898, #A88C68); /* 适配赭石棕的渐变 */
+      border-bottom: 3px solid var(--kite-brown); /* 赭石棕边框 */
+      position: relative;
+      box-shadow: inset 0 -5px 10px rgba(74, 123, 96, 0.2);
+    }
+    .scroll-top::before,
+    .scroll-top::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, var(--kite-brown), #6A4828); /* 赭石棕渐变 */
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .scroll-top::before { left: 20px; }
+    .scroll-top::after { right: 20px; }
+
+    /* 卷轴内容区（内边距+美化滚动条，适配新配色） */
+    .scroll-content {
+      padding: 30px;
+      max-height: calc(90vh - 140px);
+      overflow-y: auto;
+      /* 自定义滚动条（适配新配色） */
+      scrollbar-width: thin;
+      scrollbar-color: var(--kite-light) var(--kite-beige);
+    }
+    .scroll-content::-webkit-scrollbar { width: 8px; }
+    .scroll-content::-webkit-scrollbar-track {
+      background: var(--kite-beige); /* 米纸色 */
+      border-radius: 4px;
+    }
+    .scroll-content::-webkit-scrollbar-thumb {
+      background: var(--kite-light); /* 浅卡其 */
+      border-radius: 4px;
+      border: 2px solid var(--kite-beige);
+    }
+    .scroll-content::-webkit-scrollbar-thumb:hover {
+      background: var(--kite-green); /* 青竹绿hover */
+    }
+
+    /* 详情标题（核心：统一字体，适配新配色） */
+    .detail-title {
+      font-family: "Noto Serif SC", "STSong", "SimSun", serif;
+      font-size: 26px;
+      color: var(--kite-brown); /* 赭石棕 */
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 2px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--kite-light); /* 浅卡其边框 */
+    }
+
+    /* 详情图片（适配新边框） */
+    .detail-img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      object-fit: contain;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2), 0 0 0 3px var(--kite-light); /* 浅卡其边框 */
+      transition: all 0.4s ease;
+      opacity: 0;
+      animation: imgFadeIn 0.8s ease-out 0.3s forwards;
+    }
+    .detail-img:hover {
+      transform: scale(1.01);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3), 0 0 0 3px var(--kite-green); /* 青竹绿hover */
+    }
+
+    /* 卷轴底部装饰（对称顶部，适配新配色） */
+    .scroll-bottom {
+      height: 50px;
+      background: linear-gradient(to top, #A88C68, #C8B898, #A88C68); /* 适配赭石棕的渐变 */
+      border-top: 3px solid var(--kite-brown); /* 赭石棕边框 */
+      position: relative;
+      box-shadow: inset 0 5px 10px rgba(74, 123, 96, 0.2);
+    }
+    .scroll-bottom::before,
+    .scroll-bottom::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, var(--kite-brown), #6A4828); /* 赭石棕渐变 */
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .scroll-bottom::before { left: 20px; }
+    .scroll-bottom::after { right: 20px; }
+
+    /* 关闭按钮（适配新配色） */
+    .detail-close {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(to right, var(--kite-green), var(--kite-brown)); /* 青竹绿到赭石棕渐变 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(74, 123, 96, 0.4);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      border: 2px solid #fff;
+    }
+    .detail-close:hover {
+      transform: translateY(-3px) rotate(90deg);
+      box-shadow: 0 6px 18px rgba(74, 123, 96, 0.5);
+      background: linear-gradient(to right, var(--kite-brown), var(--kite-green)); /* 反向渐变hover */
+    }
+
+    /* ========== 动画效果（保留原有） ========== */
+    /* 卷轴展开动画（带轻微旋转+回弹） */
+    @keyframes scrollIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85) translateY(40px) rotate(1deg);
+      }
+      70% {
+        transform: scale(1.03) translateY(-5px) rotate(0);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(0);
+      }
+    }
+
+    /* 图片淡入动画 */
+    @keyframes imgFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ========== 响应式适配（保留原有，适配新配色） ========== */
+    @media (max-width: 768px) {
+      .nav-title {
+        font-size: 20px;
+        margin-left: -35px;
+      }
+      .content-wrapper {
+        padding: 20px 15px;
+      }
+      .outing-list {
+        gap: 20px;
+        padding: 5px;
+      }
+      .outing-item {
+        border-radius: 12px;
+      }
+      .route-name {
+        font-size: 20px;
+        padding: 12px 20px 8px;
+      }
+      .route-desc {
+        font-size: 15px;
+        padding: 8px 20px 18px;
+      }
+      .route-img {
+        min-height: 150px;
+      }
+      /* 移动端卷轴适配 */
+      .scroll-container {
+        max-width: 95%;
+      }
+      .scroll-content {
+        padding: 20px;
+      }
+      .detail-title {
+        font-size: 22px;
+      }
+      .detail-close {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 20px;
+        right: 20px;
+      }
+      .scroll-top, .scroll-bottom {
+        height: 45px;
+      }
+      .scroll-top::before, .scroll-top::after,
+      .scroll-bottom::before, .scroll-bottom::after {
+        width: 35px;
+        height: 35px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .content-wrapper {
+        max-width: 900px;
+      }
+      .outing-item {
+        border-radius: 18px;
+      }
+      .route-name {
+        font-size: 24px;
+      }
+      .route-desc {
+        font-size: 17px;
+      }
+      .scroll-container {
+        max-width: 900px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <div class="g-nav">
+    <a href="javascript:history.back()" class="back-btn">
+      <i class="fas fa-arrow-left"></i> 返回
+    </a>
+    <div class="nav-title">踏青</div>
+  </div>
+
+  <!-- 核心内容区 -->
+  <div class="outing-container page-container">
+    <!-- 背景图片（本地路径，保留修复后的样式） -->
+    <img src="../static/images/outing/bg.png" class="bg-img" alt="踏青背景">
+    
+    <!-- 内容层 -->
+    <div class="content-wrapper">
+      <!-- 古风标题（取消注释即可显示） -->
+      <!-- <div class="title-gufeng">潍坊风筝非遗研学路线</div> -->
+      
+      <!-- 路线列表 -->
+      <div class="outing-list">
+        <!-- 路线1 -->
+        <div class="outing-item border-gufeng ani-fade" data-route="1">
+          <img src="../static/images/outing/route1.png" mode="widthFix" class="route-img" alt="鸢飞童趣 · 非遗奇遇记">
+          <div class="route-name">鸢飞童趣 · 非遗奇遇记</div>
+          <div class="route-desc">五感激活+环保教育，亲子非遗体验</div>
+        </div>
+        
+        <!-- 路线2 -->
+        <div class="outing-item border-gufeng ani-fade" data-route="2">
+          <img src="../static/images/outing/route2.png" mode="widthFix" class="route-img" alt="风起青萍 · 匠人寻踪记">
+          <div class="route-name">风起青萍 · 匠人寻踪记</div>
+          <div class="route-desc">匠人对话+产业探访，深度非遗研学</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情页弹窗（古风卷轴版） -->
+  <div class="detail-modal" id="detailModal">
+    <!-- 卷轴容器 -->
+    <div class="scroll-container">
+      <div class="scroll-top"></div>
+      <div class="scroll-content">
+        <div class="detail-title" id="detailTitle"></div>
+        <!-- 详情图片容器 -->
+        <img id="detailImg" class="detail-img" alt="路线详情">
+      </div>
+      <div class="scroll-bottom"></div>
+    </div>
+    <!-- 关闭按钮 -->
+    <div class="detail-close" id="detailClose">
+      <i class="fas fa-times"></i>
+    </div>
+  </div>
+
+  <script>
+    // 路线详情数据（本地路径）
+    const routeDetails = {
+      1: {
+        title: "鸢飞童趣 · 非遗奇遇记",
+        img: "../static/images/outing/1.“鸢飞童趣·非遗奇遇记”研学路线/鸢飞童趣 研学路线滚动长图.png"
+      },
+      2: {
+        title: "风起青萍 · 匠人寻踪记",
+        img: "../static/images/outing/2.“风起青萍·非遗产业创新营”研学路线/风起青萍 研学路线滚动长图.png"
+      }
+    };
+
+    // 获取DOM元素
+    const modal = document.getElementById('detailModal');
+    const closeBtn = document.getElementById('detailClose');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailImg = document.getElementById('detailImg');
+    const routeItems = document.querySelectorAll('.outing-item');
+
+    // 绑定路线卡片点击事件
+    routeItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const route = this.dataset.route;
+        const detail = routeDetails[route];
+        
+        // 填充详情内容
+        detailTitle.textContent = detail.title;
+        detailImg.src = detail.img;
+        
+        // 图片加载失败兜底（古风占位图）
+        detailImg.onerror = function() {
+          this.src = `https://picsum.photos/800/1200?random=${route}&theme=vintage&q=90`;
+          this.alt = `${detail.title} - 详情图`;
+        };
+        
+        // 显示弹窗 + 禁止页面滚动
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        // 弹窗滚动到顶部
+        modal.scrollTop = 0;
+      });
+    });
+
+    // 关闭弹窗
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto'; // 恢复页面滚动
+    }
+
+    // 关闭按钮点击
+    closeBtn.addEventListener('click', closeModal);
+
+    // 点击弹窗外部关闭
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // 按ESC键关闭弹窗
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // 页面加载完成后初始化
+    window.onload = function() {
+      // 卡片淡入动画
+      const items = document.querySelectorAll('.outing-item');
+      items.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, 100 * (index + 1));
+      });
+      
+      // 验证背景图是否加载
+      const bgImg = document.querySelector('.bg-img');
+      bgImg.onerror = function() {
+        console.log('背景图加载失败，使用兜底图');
+        this.src = 'https://picsum.photos/1920/1080?theme=nature&q=90';
+      };
+    }
+  </script>
+</body>
+</html>

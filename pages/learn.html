@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学艺 | 纸鸢工坊</title>
+  <style>
+    /* 全局样式重置 + 基础变量 */
+    :root {
+      --primary-color: #8c5a2b; /* 主色-棕黄 */
+      --secondary-color: #b88646; /* 辅助色-浅棕 */
+      --bg-color: #f8f3e6; /* 背景色-宣纸色 */
+      --hotspot-color: #FFD700; /* 热区黄色 */
+      --hotspot-border: #FFA500; /* 热区边框橙色 */
+      --shadow: 0 2px 10px rgba(140, 90, 43, 0.1); /* 基础阴影 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #f5f0e8;
+      min-height: 100vh;
+      /* ========== 新增：背景图样式 ========== */
+      background-image: url('../static/images/bg.jpg'); /* 示例国风宣纸纹理图，可替换为自己的图片 */
+      background-size: cover; /* 覆盖整个屏幕 */
+      background-position: center; /* 居中显示 */
+      background-repeat: no-repeat; /* 不平铺 */
+      background-attachment: fixed; /* 固定背景，滚动时不移动 */
+      background-blend-mode: soft-light; /* 柔和混合，不干扰前景 */
+      background-opacity: 0.1;
+    }
+
+/* 新增：图片展示容器样式 - 卷轴国风版 */
+.image-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 半透明遮罩，突出内容 */
+  z-index: 9999;
+  display: none; /* 默认隐藏 */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 卷轴容器 */
+.scroll-container {
+  position: relative;
+  max-width: 600px;
+  max-height: 90vh;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f3e6"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23e0d5b8" stroke-width="0.5" opacity="0.3"/></svg>');
+  background-color: #f8f3e6; /* 宣纸底色 */
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(140, 90, 43, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* 卷轴顶部装饰 */
+.scroll-top {
+  height: 40px;
+  background: linear-gradient(to bottom, #d4b886, #e6d2b0);
+  border-bottom: 2px solid #8c5a2b;
+  position: relative;
+}
+.scroll-top::before,
+.scroll-top::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #8c5a2b;
+  border-radius: 4px;
+}
+.scroll-top::before { left: 10px; }
+.scroll-top::after { right: 10px; }
+
+/* 卷轴内容区 */
+.scroll-content {
+  padding: 30px 40px;
+  max-height: calc(90vh - 120px);
+  overflow-y: auto;
+}
+.scroll-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* 卷轴底部装饰 */
+.scroll-bottom {
+  height: 40px;
+  background: linear-gradient(to top, #d4b886, #e6d2b0);
+  border-top: 2px solid #8c5a2b;
+  position: relative;
+}
+.scroll-bottom::before,
+.scroll-bottom::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #8c5a2b;
+  border-radius: 4px;
+}
+.scroll-bottom::before { left: 10px; }
+.scroll-bottom::after { right: 10px; }
+
+/* 关闭按钮 */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  padding: 6px 14px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+.close-btn:hover {
+  background: #a66d36;
+  transform: translateY(-1px);
+}
+
+/* 淡入动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .scroll-container {
+    max-width: 95%;
+  }
+  .scroll-content {
+    padding: 20px;
+  }
+  .close-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  /* ========== 新增：移动端背景图适配 ========== */
+  body {
+    background-size: auto 100vh; /* 移动端适配高度 */
+  }
+}
+    .image-preview img {
+      max-width: 700px;
+      max-height: 800px;
+      height: auto;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* 导航栏样式 */
+    .g-nav {
+      background-color: #fff;
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      /* ========== 新增：导航栏半透明，适配背景 ========== */
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--secondary-color);
+    }
+
+    .back-icon {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .nav-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-color);
+      flex: 1;
+      text-align: center;
+      margin-left: -40px; /* 抵消返回按钮宽度，标题居中 */
+    }
+
+    /* 学艺页面容器 */
+    .learn-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 15px;
+      width: 100%;
+      min-height: calc(100vh - 70px); /* 减去导航栏高度 */
+      /* ========== 新增：容器半透明背景，突出内容 ========== */
+      background-color: rgba(248, 243, 230, 0.85);
+      border-radius: 12px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(140, 90, 43, 0.08);
+    }
+
+    /* 工坊图容器 - 核心定位容器 */
+    .learn-workshop {
+      width: 100%;
+      max-width: 640px; /* PC端最大宽度，避免图片过大 */
+      margin: 0 auto;
+      position: relative; /* 子元素绝对定位的上下文 */
+    }
+
+    .workshop-img {
+      width: 100%;
+      display: block;
+      height: auto; /* 保持图片比例 */
+    }
+
+    /* 通用热区样式：闪烁的黄色圆形（适配PC/移动端） */
+    .hotspot {
+      position: absolute;
+      width:1.2vw; /* 对应小程序24rpx，750rpx=100vw → 24/750*100=3.2vw */
+      height: 1.2vw;
+      min-width: 16px; /* 移动端最小尺寸 */
+      min-height: 16px;
+      max-width: 32px; /* PC端最大尺寸 */
+      max-height: 32px;
+      border-radius: 50%;
+      background-color: var(--hotspot-color);
+      border: 2px solid var(--hotspot-border);
+      animation: blink 1.5s infinite ease-in-out;
+      z-index: 10;
+      cursor: pointer;
+      transform: translate(-50%, -50%); /* 中心点对齐定位点 */
+    }
+
+    /* 闪烁动画关键帧（和小程序一致） */
+    @keyframes blink {
+      0%, 100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+    }
+
+    /* 精准定位五个热区（百分比定位，适配所有屏幕） */
+    .hotspot-material { top: 30%; left: 58%; }
+    .hotspot-tool     { top: 53%; left: 71%; }
+    .hotspot-frame    { top: 60%; left: 22%; }
+    .hotspot-color    { top: 52%; left: 21%; }
+    .hotspot-display  { top: 28%; left: 35%; }
+
+    /* 说明框样式（适配PC/移动端） */
+    .label {
+      position: absolute;
+      background-color: var(--bg-color);
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: calc(16px + 0.6vw); 
+      color: var(--primary-color);
+      line-height: 1.5;
+      z-index: 5;
+      max-width: 240px; 
+      /* ========== 新增：说明框半透明，适配背景 ========== */
+      background-color: rgba(248, 243, 230, 0.95);
+    }
+
+    /* 说明框文字样式：用 em 保持比例 */
+    .label-text {
+      display: block;
+      font-weight: bold;
+      font-size: 1.2em; /* 标题是基础字体的1.2倍 */
+      margin-bottom: 6px;
+    }
+    .label-desc {
+      display: block;
+      font-weight: normal;
+      font-size: 0.9em; /* 描述是基础字体的0.9倍，比例协调 */
+    }
+
+    /* 说明框连线 - 伪元素（适配不同屏幕） */
+    /* 材料存放处：竖线+横线 */
+    .label-material {
+      top: 5%;
+      left: 100%;
+      width: 180px; /* 显式设置宽度，和其他标签一致 */
+      max-width: none; /* 移除 max-width 限制 */
+      height: auto; /* 保持自适应 */
+    }
+    .label-material::before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: calc(87px + 1vw); /* 竖线高度保持不变 */
+      background-color: var(--secondary-color);
+      top: 100%; /* 竖线顶端贴紧方框底部 */
+      left: 50%; /* 竖线水平居中于方框 */
+      transform: translateX(-50%); /* 精准居中 */
+    }
+    .label-material::after {
+      content: '';
+      position: absolute;
+      width: calc(320px + 2vw); /* 横线长度保持不变 */
+      height: 1px; /* 横线粗细保持不变 */
+      background-color: var(--secondary-color);
+      top: calc(100% + 87px + 1vw); 
+      left: 50%; /* 横线右侧端点对齐竖线水平中心 */
+      transform: translate(-100%, -50%); 
+    }
+
+    /* 工具存放处：横线 */
+    .label-tool {
+      top: 47%; 
+      left: 100%; /* 移到图片外 */
+      width: 180px; /* 显式设置宽度 */
+      max-width: none; /* 移除 max-width 限制 */
+      height: auto; /* 保持自适应 */
+    }
+    .label-tool::before {
+      content: '';
+      position: absolute;
+      width: calc(160px + 1vw); /* 线条总长度 */
+      height: 2px; /* 线条粗细 */
+      background-color: var(--secondary-color); /* 线条颜色 */
+      top: 50%; /* 垂直中间线 */
+      left: 0; /* 右侧端点对齐方框最左侧 */
+      transform: translate(-100%, -50%); 
+    }
+
+    /* 骨架编织处：竖线 */
+    .label-frame {
+      top: 55%;
+      left: -25%;
+      width: 180px; /* 显式设置宽度 */
+      max-width: none; /* 移除 max-width 限制 */
+      height: auto; /* 保持自适应 */
+    }
+    .label-frame::before {
+      content: '';
+      position: absolute;
+      width: calc(80px + 1.5vw); /* 横线长度 */
+      height: 1px; /* 横线粗细 */
+      background-color: var(--secondary-color);
+      top: 30%; /* 横线垂直居中 */
+      left: 100%; /* 左侧端点贴紧方框最右侧 */
+      transform: translateY(-50%); /* 居中修正 */
+    }
+
+    /* 上色处：横线 */
+    .label-color {
+      top: 35%;
+      left: -30%;
+      width: 180px; /* 显式设置宽度 */
+      max-width: none; /* 移除 max-width 限制 */
+      height: auto; /* 保持自适应 */
+    }
+    /* 原横线：从方框最右侧向右延伸 */
+    .label-color::before {
+      content: '';
+      position: absolute;
+      width: calc(130px + 1vw); /* 横线长度 */
+      height: 1px; /* 横线粗细 */
+      background-color: var(--secondary-color);
+      top: 50%; /* 横线垂直居中 */
+      left: 100%; /* 左侧端点贴紧方框最右侧 */
+      right: auto;
+      transform: translateY(-50%); /* 垂直居中修正 */
+    }
+    /* 新增竖线：在横线最右侧末端 */
+    .label-color::after {
+      content: '';
+      position: absolute;
+      width: 1px; /* 竖线粗细 */
+      height: calc(80px + 0.5vw); /* 竖线高度 */
+      background-color: var(--secondary-color); /* 和横线同色 */
+      top: 50%; /* 竖线垂直居中于横线 */
+      left: calc(100% + 130px + 1vw); /* 横线最右侧 */
+      transform: translateY(0%); /* 居中修正 */
+    }
+
+    /* 纸鸢展示处：竖线 */
+    .label-display {
+      top: 5%;
+      left: -10%;
+      width: 180px; /* 显式设置宽度 */
+      max-width: none; /* 移除 max-width 限制 */
+      height: auto; /* 保持自适应 */
+    }
+    /* 原竖线：从方框底部向下延伸 */
+    .label-display::before {
+      content: '';
+      position: absolute;
+      width: 1px; /* 竖线粗细 */
+      height: calc(45px + 1vw); /* 竖线高度 */
+      background-color: var(--secondary-color);
+      top: 100%; /* 竖线顶端贴紧方框底部 */
+      left: 55%; /* 竖线水平位置 */
+      transform: translateX(-50%); /* 水平居中修正 */
+    }
+    /* 新增横线：在竖线最底端 */
+    .label-display::after {
+      content: '';
+      position: absolute;
+      width: calc(140px + 1vw); /* 横线长度 */
+      height: 1px; /* 横线粗细 */
+      background-color: var(--secondary-color); /* 和竖线同色 */
+      top: calc(100% + 45px + 1vw); /* 竖线末端 */
+      left: 55%; /* 对齐竖线水平位置 */
+      transform: translate(0%, -50%); 
+    }
+
+    /* 响应式适配 - 移动端（768px以下） */
+    @media (max-width: 768px) {
+      .nav-title {
+        font-size: 16px;
+        margin-left: -35px;
+      }
+      .learn-container {
+        padding: 15px 10px;
+        background-color: rgba(248, 243, 230, 0.9); /* 移动端提高透明度 */
+      }
+      .learn-workshop {
+        max-width: 100%; /* 移动端占满宽度 */
+      }
+      /* 移动端热区尺寸微调 */
+      .hotspot {
+        width: 4vw;
+        height: 4vw;
+        min-width: 14px;
+        min-height: 14px;
+        max-width: 24px;
+        max-height: 24px;
+      }
+      .label {
+        font-size: 15px; /* 原13px → 15px */
+        padding: 10px 14px; /* 原6px 10px → 10px 14px */
+      }
+      /* 移动端图片预览适配 */
+      .image-preview img {
+        max-width: 300px;
+        max-height: 400px;
+      }
+    }
+
+    /* 响应式适配 - 大屏PC（1200px以上） */
+    @media (min-width: 1200px) {
+      .label {
+        font-size: 18px; /* 原16px → 18px */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏（补充完整，之前代码遗漏） -->
+  <nav class="g-nav">
+    <div class="nav-container">
+      <div class="back-btn" onclick="goBack()">
+        <span class="back-icon">←</span>
+        <span>返回首页</span>
+      </div>
+      <h1 class="nav-title">学艺 | 纸鸢工坊</h1>
+      <div class="placeholder"></div>
+    </div>
+  </nav>
+
+  <!-- 新增：图片预览容器 - 卷轴国风版 -->
+<div class="image-preview" id="preview-modal">
+  <div class="scroll-container">
+    <div class="scroll-top"></div>
+    <div class="scroll-content">
+      <img id="preview-img" src="" alt="详情图片">
+    </div>
+    <div class="scroll-bottom"></div>
+    <button class="close-btn" onclick="closeImage()">关闭</button>
+  </div>
+</div>
+
+  <!-- 学艺页面主体 -->
+  <div class="learn-container">
+    <!-- 工坊图容器 - 核心定位容器 -->
+    <div class="learn-workshop">
+      <!-- 工坊背景图（替换为实际图片URL） -->
+      <img src="../static/images/learn/纸鸢工坊 去底版.png" alt="纸鸢工坊" class="workshop-img">
+      
+      <!-- 1. 材料存放处热区 -->
+      <div class="hotspot hotspot-material" onclick="showImage('../static/images/learn/material.png')"></div>
+      <div class="label label-material">
+        <span class="label-text">材料存放处</span>
+        <span class="label-desc">你喜欢的样子，这里都有！</span>
+      </div>
+
+      <!-- 2. 工具存放处热区 -->
+      <div class="hotspot hotspot-tool" onclick="showImage('../static/images/learn/tool.png')"></div>
+      <div class="label label-tool">
+        <span class="label-text">工具存放处</span>
+        <span class="label-desc">工欲善其事，必先利其器</span>
+      </div>
+
+      <!-- 3. 骨架编织处热区 -->
+      <div class="hotspot hotspot-frame" onclick="showImage('../static/images/learn/frame.png')"></div>
+      <div class="label label-frame">
+        <span class="label-text">骨架编织处</span>
+        <span class="label-desc">想要飞得又高又远可得有一副好身体~</span>
+      </div>
+
+      <!-- 4. 上色处热区 -->
+      <div class="hotspot hotspot-color" onclick="showImage('../static/images/learn/color.png')"></div>
+      <div class="label label-color">
+        <span class="label-text">上色处</span>
+        <span class="label-desc">为你的纸鸢涂上最美丽的颜色吧~</span>
+      </div>
+
+      <!-- 5. 纸鸢展示处热区 -->
+      <div class="hotspot hotspot-display" onclick="showImage('../static/images/learn/display.png')"></div>
+      <div class="label label-display">
+        <span class="label-text">纸鸢展示处</span>
+        <span class="label-desc">在这里展示你最喜欢的那一只纸鸢吧~</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 新增：显示图片函数
+function showImage(imgUrl) {
+  const previewContainer = document.getElementById('preview-modal');
+  const previewImg = document.getElementById('preview-img');
+  
+  previewImg.src = imgUrl;
+  previewContainer.style.display = 'flex'; // 改为flex，方便居中
+}
+
+// 新增：关闭图片函数
+function closeImage() {
+  const previewContainer = document.getElementById('preview-modal');
+  previewContainer.style.display = 'none';
+  document.getElementById('preview-img').src = '';
+}
+
+// 点击遮罩也能关闭
+document.getElementById('preview-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeImage();
+});
+    // 原返回函数（保留，若需要）
+    function goBack() {
+      window.history.back();
+    }
+
+    // 页面加载时确保图片加载完成
+    window.onload = function() {
+      const workshopImg = document.querySelector('.workshop-img');
+      workshopImg.onload = function() {
+        console.log('工坊图片加载完成，热区定位就绪');
+      }
+      // 图片加载失败提示
+      // workshopImg.onerror = function() {
+      //   alert('背景图加载失败，请检查路径：../static/images/learn/纸鸢工坊 去底版.png');
+      // }
+    }
+  </script>
+</body>
+</html>

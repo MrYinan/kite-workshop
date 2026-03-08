@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>读书 · 鸢时漫记 | 纸鸢非遗</title>
+  <!-- 引入思源宋体，与首页统一 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 图标库（用于装饰） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ========== 全局基础样式（仅美化颜色、字体、阴影，不改变尺寸） ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      /* 字体改为思源宋体 */
+      font-family: 'Noto Serif SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+      background-color: #F5F0E8; /* kite-beige */
+      color: #4a3b2c; /* 深褐色文字 */
+    }
+
+    /* ========== 页面容器（全屏无留白） ========== */
+    .oral-history-container {
+      min-height: 100vh;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ========== 顶部标题栏（仅美化颜色、阴影） ========== */
+    .page-header {
+      background-color: #8C6A48; /* kite-brown */
+      color: #F5F0E8; /* kite-beige */
+      padding: 20px 25px;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      box-shadow: 0 4px 12px rgba(140, 106, 72, 0.25); /* 阴影色适配棕色 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      /* 添加一个极细装饰线 */
+      border-bottom: 1px solid rgba(232, 220, 200, 0.3);
+    }
+
+    /* ========== 标题栏返回按钮（微调样式） ========== */
+    .header-back-btn {
+      position: absolute;
+      left: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #F5F0E8;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 6px 14px;
+      border-radius: 30px; /* 更圆润 */
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 245, 235, 0.2);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .header-back-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-50%) scale(1.02);
+    }
+
+    .back-icon {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* ========== 主内容区（两列网格，尺寸完全不变） ========== */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: calc(100vh - 68px);
+    }
+
+    /* ========== 通用列样式（内边距不变） ========== */
+    .column {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 左列：传承人（背景色微调为更温暖的米色） */
+    .heritor-column {
+      background-color: rgba(245, 240, 232, 0.95); /* 微调数值，接近kite-beige */
+      border-right: 1px solid rgba(140, 106, 72, 0.15); /* 边框颜色变浅 */
+    }
+
+    /* 右列：绘本 */
+    .book-column {
+      background-color: rgba(245, 240, 232, 0.92);
+    }
+
+    /* 列标题（美化：颜色、边框、图标） */
+    .column-title {
+      font-size: 18px;
+      color: #4A7B60; /* kite-green */
+      margin-bottom: 30px;
+      padding-left: 15px;
+      border-left: 4px solid #8C6A48; /* kite-brown */
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* 添加伪元素图标（可选，但保留原有结构，故不加额外元素） */
+    .column-title::before {
+      content: '\f0a4'; /* 字体图标不适用，但我们可以用真实图标放在HTML中，此处不修改结构，仅示例 */
+      /* 实际美化时不在CSS加图标，保持原有结构 */
+    }
+
+    /* ========== 传承人列表（卡片样式美化，尺寸不变） ========== */
+    .heritor-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px; /* 间隙不变 */
+      flex-grow: 1;
+    }
+
+    .heritor-item {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(140, 106, 72, 0.1); /* 更柔和的阴影 */
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      border: 1px solid #E8DCC8; /* kite-light 边框 */
+    }
+
+    .heritor-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 28px rgba(74, 123, 96, 0.15); /* 悬停阴影带绿色 */
+      border-color: #4A7B60; /* 悬停边框变绿 */
+    }
+
+    .heritor-photo {
+      width: 100%;
+      height: 200px; /* 完全不变 */
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .heritor-item:hover .heritor-photo {
+      transform: scale(1.02); /* 图片微动 */
+    }
+
+    .heritor-name {
+      padding: 12px 12px 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #4A7B60; /* kite-green */
+      text-align: center;
+      display: block;
+    }
+
+    /* 传承人一句话介绍样式（颜色优化） */
+    .heritor-intro {
+      padding: 0 12px 12px;
+      font-size: 14px;
+      color: #6b5a4a; /* 深褐色，增加可读性 */
+      text-align: center;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      opacity: 0.8;
+    }
+
+    /* ========== 绘本列表（卡片样式美化，尺寸不变） ========== */
+    .book-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      flex-grow: 1;
+    }
+
+    .book-item {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(140, 106, 72, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      border: 1px solid #E8DCC8;
+    }
+
+    .book-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 28px rgba(74, 123, 96, 0.15);
+      border-color: #4A7B60;
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 250px; /* 不变 */
+      object-fit: contain;
+      background-color: #f8f5f0;
+      transition: transform 0.5s ease;
+      padding: 0.5rem; /* 增加一点内边距，但容器高度不变，可微调，不影响外部尺寸 */
+    }
+    .book-item:hover .book-cover {
+      transform: scale(1.02);
+    }
+
+    .book-title {
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #4A7B60; /* kite-green */
+      text-align: center;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ========== 响应式适配（完全保留原断点和行为） ========== */
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      .heritor-column {
+        border-right: none;
+        border-bottom: 1px solid rgba(140, 106, 72, 0.15);
+      }
+      .page-header {
+        font-size: 20px;
+        padding: 18px 20px;
+      }
+      .header-back-btn {
+        font-size: 14px;
+        left: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .heritor-list, .book-list {
+        grid-template-columns: 1fr;
+      }
+      .column {
+        padding: 20px;
+      }
+      .page-header {
+        font-size: 18px;
+      }
+    }
+
+    /* 保持原有底部返回按钮注释状态，不做修改 */
+  </style>
+</head>
+<body>
+  <div class="oral-history-container">
+    <!-- 顶部标题栏 -->
+    <header class="page-header">
+      <div class="header-back-btn" onclick="goBack()">
+        <span class="back-icon">←</span>
+        <span>返回</span>
+      </div>
+      <i class="fa-solid fa-kite" style="margin-right: 10px; color: #E8DCC8;"></i> <!-- 添加风筝图标，增强非遗感 -->
+      鸢承古今 · 潍坊风筝非遗馆
+    </header>
+
+    <!-- 主内容区（结构完全不变） -->
+    <div class="main-content">
+      <!-- 左列：传承人 -->
+      <div class="column heritor-column">
+        <h2 class="column-title"><i class="fa-solid fa-users" style="margin-right: 6px; color: #8C6A48;"></i>传承人</h2> <!-- 增加图标 -->
+        <div class="heritor-list">
+          <!-- 传承人卡片（完全保留原有图片路径和文字） -->
+          <div class="heritor-item" onclick="toDetail('heritor', '韩臻')">
+            <img src="../static/images/oral-history/韩臻.png" class="heritor-photo" alt="韩臻">
+            <span class="heritor-name">韩臻</span>
+            <div class="heritor-intro">专注潍坊传统硬翅风筝制作技艺传承</div>
+          </div>
+          <div class="heritor-item" onclick="toDetail('heritor', '蒋静')">
+            <img src="../static/images/oral-history/蒋静.png" class="heritor-photo" alt="蒋静">
+            <span class="heritor-name">蒋静</span>
+            <div class="heritor-intro">擅长风筝彩绘，融合现代美学与传统工艺</div>
+          </div>
+          <div class="heritor-item" onclick="toDetail('heritor', '郭洪利')">
+            <img src="../static/images/oral-history/郭洪利.png" class="heritor-photo" alt="郭洪利">
+            <span class="heritor-name">郭洪利</span>
+            <div class="heritor-intro">非遗传承人，深耕龙头蜈蚣风筝制作数十年</div>
+          </div>
+          <div class="heritor-item" onclick="toDetail('heritor', '杨红卫')">
+            <img src="../static/images/oral-history/杨红卫.png" class="heritor-photo" alt="杨红卫">
+            <span class="heritor-name">杨红卫</span>
+            <div class="heritor-intro">致力于风筝文化普及，开设非遗教学课堂</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右列：绘本 -->
+      <div class="column book-column">
+        <h2 class="column-title"><i class="fa-solid fa-book-open" style="margin-right: 6px; color: #8C6A48;"></i>古今鸢缘系列绘本</h2>
+        <div class="book-list">
+          <!-- 绘本卡片（完全保留原有图片路径和文字） -->
+          <div class="book-item" onclick="toDetail('book', '《风筝的传承》')">
+            <img src="../static/images/oral-history/《风筝的传承》封面.png" class="book-cover" alt="风筝的传承">
+            <span class="book-title">《风筝的传承》</span>
+          </div>
+          <div class="book-item" onclick="toDetail('book', '《风筝的千年之旅》')">
+            <img src="../static/images/oral-history/《风筝的千年之旅》封面.png" class="book-cover" alt="风筝的千年之旅">
+            <span class="book-title">《风筝的千年之旅》</span>
+          </div>
+          <div class="book-item" onclick="toDetail('book', '《风筝与世界的对话》')">
+            <img src="../static/images/oral-history/《风筝与世界的对话》封面.png" class="book-cover" alt="风筝与世界的对话">
+            <span class="book-title">《风筝与世界的对话》</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 跳转到详情页（完全保留原有逻辑）
+    function toDetail(type, nameOrTitle) {
+      if (type === 'heritor') {
+        const encodeName = encodeURIComponent(nameOrTitle);
+        window.location.href = `heritorDetail.html?name=${encodeName}`;
+      } else if (type === 'book') {
+        const encodeTitle = encodeURIComponent(nameOrTitle);
+        window.location.href = `bookImageDetail.html?title=${encodeTitle}`;
+      }
+    }
+
+    // 返回上一页
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>

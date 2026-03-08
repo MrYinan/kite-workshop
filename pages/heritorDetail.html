@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>传承人 · 鸢时漫记 | 纸鸢非遗</title>
+  <!-- 思源宋体 + Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ========== 设计语言 (与首页统一) ========== */
+    :root {
+      --kite-beige: #F5F0E8;
+      --kite-green: #4A7B60;
+      --kite-brown: #8C6A48;
+      --kite-light: #E8DCC8;
+      --text-dark: #4a3b2c;
+      --shadow-sm: 0 4px 12px rgba(140, 106, 72, 0.08);
+      --shadow-md: 0 8px 24px rgba(74, 123, 96, 0.12);
+      --radius-card: 1.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', serif;
+      background-color: var(--kite-beige);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* 页面容器 - 减少顶部内边距，让内容上移 */
+    .heritor-detail-container {
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      padding: 1rem 1rem; /* 原2rem 1rem，减少顶部padding */
+    }
+
+    /* 背景图 (半透明、柔化) */
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      opacity: 0.2;
+      filter: blur(6px) brightness(1.1);
+    }
+
+    /* 主内容卡片 (最大宽度1000px) - 减少顶部内边距 */
+    .page-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-card);
+      padding: 1.5rem 2.2rem; /* 原2.5rem 2.2rem，减少顶部padding */
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(232, 220, 200, 0.6);
+    }
+
+    /* 返回按钮 (缩小尺寸 + 固定左上角) */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem; /* 原0.6rem，缩小间距 */
+      padding: 0.5rem 1rem; /* 原0.7rem 1.5rem，缩小内边距 */
+      margin-bottom: 1.2rem; /* 原2rem，减少底部间距 */
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 3rem;
+      border: 1px solid var(--kite-brown);
+      color: var(--kite-brown);
+      font-size: 0.9rem; /* 原1rem，缩小字体 */
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      position: absolute; /* 新增：固定定位 */
+      top: 1rem; /* 距离顶部1rem */
+      left: 1rem; /* 距离左侧1rem */
+      z-index: 99; /* 确保在最上层 */
+    }
+    .back-btn:hover {
+      background: var(--kite-brown);
+      color: white;
+      transform: translateX(-2px); /* 原-4px，缩小位移 */
+      border-color: var(--kite-brown);
+    }
+    .back-icon {
+      font-size: 1rem; /* 原1.2rem，缩小图标 */
+      font-weight: 600;
+    }
+
+    /* 传承人信息区 (横排) - 减少底部间距 */
+    .heritor-info {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      margin-bottom: 1.8rem; /* 原2.5rem，减少底部间距 */
+      flex-wrap: wrap;
+      margin-top: 0.5rem; /* 微调顶部位置 */
+    }
+
+    /* 圆形头像 (带光晕) */
+    .heritor-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 10px 20px rgba(74, 123, 96, 0.25);
+      transition: transform 0.4s ease;
+    }
+    .heritor-avatar:hover {
+      transform: scale(1.02);
+    }
+
+    /* 文字信息区 */
+    .heritor-text-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .heritor-name {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--kite-green);
+      letter-spacing: 2px;
+      margin-bottom: 0.8rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    .heritor-name::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      background: var(--kite-brown);
+      border-radius: 2px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      color: #5e4d3a;
+      margin: 0.6rem 0;
+    }
+    .info-item i {
+      color: var(--kite-green);
+      width: 1.5rem;
+      font-size: 1.2rem;
+    }
+
+    /* 详细介绍卡片 */
+    .heritor-intro {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      padding: 2rem 2.2rem;
+      border: 1px solid var(--kite-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .intro-title {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--kite-green);
+      margin-bottom: 1.8rem;
+      border-bottom: 2px solid var(--kite-light);
+      padding-bottom: 0.8rem;
+    }
+    .intro-title i {
+      color: var(--kite-brown);
+    }
+
+    /* 段落样式：首行缩进2字符，底部边距0 (无空行) */
+    .intro-paragraph {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: #4d4137;
+      text-align: justify;
+      text-indent: 2em;
+      margin-bottom: 0;       
+      letter-spacing: 0.02em;
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 768px) {
+      .page-content {
+        padding: 1.8rem 1.2rem;
+        padding-top: 3rem; /* 移动端给返回按钮预留空间 */
+      }
+      .heritor-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        margin-top: 0;
+      }
+      .heritor-name::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .info-item {
+        justify-content: center;
+      }
+      .heritor-avatar {
+        width: 120px;
+        height: 120px;
+      }
+      .heritor-name {
+        font-size: 2rem;
+      }
+      .intro-title {
+        font-size: 1.4rem;
+      }
+      .intro-paragraph {
+        font-size: 1rem;
+        line-height: 1.9;
+      }
+      /* 移动端返回按钮微调 */
+      .back-btn {
+        top: 0.8rem;
+        left: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-content {
+        padding: 1.2rem 1rem;
+        padding-top: 2.5rem;
+      }
+      .back-btn {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景图 (可替换为自己的图片) -->
+  <img src="../static/images/index/背景图1.jpg" class="bg-image" alt="" loading="lazy">
+
+  <div class="heritor-detail-container">
+    <div class="page-content">
+      <!-- 返回按钮 (缩小+固定左上角) -->
+      <div class="back-btn" onclick="goBack()">
+        <span class="back-icon">←</span>
+        <span>返回</span>
+      </div>
+
+      <!-- 传承人核心信息区 -->
+      <div class="heritor-info">
+        <img id="heritorAvatar" class="heritor-avatar" src="" alt="传承人头像" loading="lazy">
+        <div class="heritor-text-info">
+          <div class="heritor-name" id="heritorName"></div>
+          <div class="info-item"><i class="fa-regular fa-calendar"></i> <span id="birthDate"></span></div>
+          <div class="info-item"><i class="fa-regular fa-user"></i> <span id="gender"></span></div>
+          <div class="info-item"><i class="fa-regular fa-flag"></i> <span id="nation"></span></div>
+        </div>
+      </div>
+
+      <!-- 传承人详细介绍 (段落连续，无空行) -->
+      <div class="heritor-intro">
+        <div class="intro-title"><i class="fa-solid fa-feather"></i> 传承人介绍</div>
+        <div id="introContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 传承人数据 (保持不变，内容已按需整理)
+    const heritorData = {
+      "韩臻": {
+        birthDate: "1968年05月",
+        gender: "男",
+        nation: "汉族",
+        introContent: `"因为喜欢，所以坚持。"—在伤痕与老茧间，将谋生的手艺淬炼为文化的使命。
+一根竹篾，三十七载光阴。山东省潍坊市寒亭区海鹏风筝坊内，国家级非物质文化遗产潍坊风筝传承人韩臻正专注地劈竹、扎制。这位从1988年开始学习风筝制作的手艺人，见证了潍坊风筝从作坊式生产到产业化发展的全过程，也亲历了这项传统技艺入选国家级非遗后的蓬勃发展。
+潍坊风筝的灵魂在于无法被机器替代的手工。精选三年以上毛竹，劈成毫厘竹篾，再经扎制、绘画—每一步都凝结着手艺人一生的体悟。2006年潍坊风筝入选国家级非遗名录，是她人生的转折点。从农村作坊走向世界舞台，她成了文化的使者。
+生存的压力推动着创新。非典时期传统风筝滞销，团队转向易飞的三角类风筝，其灵感实则源于1984年国际风筝会上的跨文化碰撞。韩臻深刻体会到：老祖宗的手艺，必须创新发展才能永远前进。
+面对产业化冲击与传承断层，韩臻的应对清晰而坚定：一是让非遗进校园，在孩子们放飞自制风筝时播下文化的种子；二是大胆创新，融合现代元素、试用新材料，开发夜光风筝等新形态，让古老技艺活在当下。
+她的家庭作坊正悄然转型：儿子负责现代研发，儿媳研习传统工笔，孙子从小接触竹篾。手艺作为文化基因在家族中延续。她坚信，没有商业活不下去，没有文化走不长远。关键在于让坚守本真的手艺人获得体面回报，找到传统与创新之间的平衡支点。
+当风筝再次乘风而起，它所承载的，不仅是千年的技艺，更是一个守艺者在传统与创新之间，劈出的一条扎实前路。`
+      },
+      "蒋静": {
+        birthDate: "1975年08月",
+        gender: "女",
+        nation: "汉族",
+        introContent: `“让非遗活在当下，让技艺点亮生活。”——用一根丝线，编织出百名妇女的就业之路与非遗的活化之路。
+一根丝线，联结百家生计，牵动古今技艺。在临朐县北苑社区的绳艺工坊里，临朐绳艺非遗传承人蒋静正以指尖的编织，让这份古老艺术焕发新生，飞向更广阔的天空。
+蒋静的创新根植于传统，又面向现代生活。她突破绳艺多用于装饰的局限，开发出手绳、立体挂件、胸针、发钗等琳琅满目的绳艺编织品，让古老技艺以崭新姿态走进千家万户。其作品《七彩琉璃灯》曾入选“山东手造·优选100”及第40届潍坊国际风筝会，多系列作品还曾赴德国参展。
+让非遗“活”在当下，蒋静的关键实践是创建“妈妈岗”柔性就业模式。她通过灵活的时间管理与网络教学，带动周边百余名妇女居家就业，实现稳定增收。作为县里选派的“基层文化建设指导员”，她深入社区开设公益课程，在传授挽、结、穿、编等技艺的同时，也为学员提供了就业岗位。同时，她也积极参与“非遗进校园”等活动，为孩子们讲解“祥云结”“双联结”背后的美好寓意，在他们心中播下文化的种子。
+面向未来，蒋静持续拓展绳艺的边界。她通过电商直播、制作视频教程和材料包等方式，降低体验门槛，并计划打造完整的绳艺风筝产业链。“让非遗活在当下，让技艺点亮生活”，是她坚守的理念。一根彩绳，连结了生计与文化，传统与未来，在她手中，正编出一条非遗活态传承的崭新路径。`
+      },
+      "郭洪利": {
+        birthDate: "1962年12月",
+        gender: "男",
+        nation: "汉族",
+        introContent: `“品牌注入时代气息，我为品牌赋予文化灵魂。”——以一把竹刀游刃于传统与现代之间，搭建非遗跨文化传播的桥梁。
+一把竹刀，五十余国。在山东省潍坊奥祥风筝有限公司内，国家级非遗潍坊风筝省级代表性传承人郭洪利，在三十余载光阴里，将家族技艺淬炼为跨文化传播的桥梁。
+“风筝是技艺，是文化，更是科学。”作为郭氏风筝世家第四代传人，郭洪利承袭“竹有节，人更要有节”的匠人风骨。2006年潍坊风筝入选国家级非遗后，他更加坚信：非遗要活在当代，就必须让传统技艺与现代对话。
+他的创新，体现在对技艺极限的挑战与科学融合。他首创直径仅3厘米的硬币级微型风筝，并将中国古建筑的榫卯结构应用于风筝骨架，极大提升了稳定性。其代表作《龙头蜈蚣》曾获中国非遗博览会金奖，多件作品被选为国家外事礼品。
+面对全球化的挑战，他践行“旧瓶新酒”的跨界哲学。自2012年为诺基亚定制50万只风筝起，他相继与肯德基、腾讯游戏等品牌合作，将九色鹿、飞天等传统元素与《王者荣耀》《和平精英》等游戏IP创新结合。2025年，他与《和平精英》合作的15.6米大型运输机风筝成为国际风筝会焦点。
+同时，他积极承担文化使者角色，连续三十余年赴全球50多个国家进行文化交流与教学。即使在疫情期间仍通过云端向世界传播风筝技艺。对于传承，他构建了立体化体系，坚持“非遗进校园”并走进海外学校。他持有开放包容的态度，不强迫接班，但致力于让手艺成为年轻人的“文化基因”。他坚信非遗的未来在于“双向破壁”：向下扎根，深入传统本质；向上生长，拥抱科技创新。
+郭洪利用一把竹刀证明，当古老技艺与现代科技相遇，当传统纹样与当代审美对话，这项千年非遗必将在新时代绽放更绚丽的光彩。`
+      },
+      "杨红卫": {
+        birthDate: "1970年03月",
+        gender: "男",
+        nation: "汉族",
+        introContent: `“传统是容器，要盛放时代的活水。”——在百年竹架前，用历史的深度定义创新的尺度。
+一副竹架，百年传承。潍坊市寒亭区洪伟年画风筝店内，国家级非物质文化遗产项目风筝制作技艺代表性传承人杨红卫，展示了其祖父于1927年制作的龙头蜈蚣风筝骨架——她正以这样的方式，在传统与现代之间找到平衡，稳稳托举起这项非遗技艺的未来。
+“非遗的核心是手工技艺本身。”她强调，2006年申报成功的正是这项技艺，而非风筝产品。真正的非遗需历经四重淬炼：精选三年以上毛竹，劈出毫米细篾，棉线扎制数百对称节点，再以矿物颜料手绘年画典故。“机械印刷的渐变，哪有手绘的灵气？”。
+面对产业化冲击，她以“旧瓶装新酒”作为创新哲学。工作室内，神舟飞船风筝与传统沙燕比邻而挂——航天器造型用传统竹骨弯制，华为标识以工笔技法描绘。在她看来，唯有先完整掌握传统，才能谈真正的传承与发展。
+传承之路充满现实挑战：高昂的时间成本、迫切的技艺断层、被市场误解的手工价值。她的应对之道清晰而多元：坚持“非遗进校园”，从中小学操场到大学课堂播撒文化种子；在国际交流中汲取灵感；于家族内部构建传承链，让技艺成为流淌的血脉。
+其新作《太空中国龙》，将传统龙纹与航天员形象交融，竹骨与新型材料结合，正是“敬畏中创新”的生动实践。关键在于找到传统精神与当代需求之间坚实的平衡点。
+“风筝放到空中是艺术，摆在桌上就是历史。”杨红卫用半生实践证明，非遗的永生之道，始于对历史的敬畏，成于向未来的敞开。`
+      }
+    };
+
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const name = decodeURIComponent(urlParams.get('name') || '');
+      
+      if (heritorData[name]) {
+        document.getElementById('heritorAvatar').src = `../static/images/oral-history/${name}.png`;
+        document.getElementById('heritorName').textContent = name;
+        document.getElementById('birthDate').textContent = `出生年月：${heritorData[name].birthDate}`;
+        document.getElementById('gender').textContent = `性别：${heritorData[name].gender}`;
+        document.getElementById('nation').textContent = `民族：${heritorData[name].nation}`;
+        renderIntroContent(heritorData[name].introContent);
+      } else {
+        document.getElementById('heritorAvatar').src = `../static/images/oral-history/默认头像.png`;
+        document.getElementById('heritorName').textContent = "暂无信息";
+        document.getElementById('birthDate').textContent = "出生年月：暂无记录";
+        document.getElementById('gender').textContent = "性别：暂无记录";
+        document.getElementById('nation').textContent = "民族：暂无记录";
+        renderIntroContent("该传承人暂无详细介绍，敬请期待。");
+      }
+    }
+
+    // 将介绍文本按换行符拆分为段落，并移除空行 (保持连续)
+    function renderIntroContent(content) {
+      const container = document.getElementById('introContent');
+      const paragraphs = content.split('\n').filter(p => p.trim() !== '');
+      let html = '';
+      paragraphs.forEach(p => {
+        html += `<p class="intro-paragraph">${p}</p>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>

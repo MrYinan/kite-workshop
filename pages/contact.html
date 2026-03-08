@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系我们 - 鸢时漫记</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 自定义配置（和主页面保持一致） -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kite-beige': '#F5F0E8',
+                        'kite-green': '#4A7B60',
+                        'kite-brown': '#8C6A48',
+                        'kite-light': '#E8DCC8',
+                    },
+                    fontFamily: {
+                        chinese: ['"Ma Shan Zheng"', 'STKaiti', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- 自定义样式 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-kite {
+                @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6;
+            }
+            .input-kite {
+                @apply w-full p-3 rounded-lg border border-kite-light focus:border-kite-green focus:outline-none transition-colors;
+            }
+        }
+    </style>
+    <!-- 引入古风字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body class="bg-kite-beige font-chinese text-kite-brown">
+    <!-- 导航栏（和主页面保持一致） -->
+    <header class="py-4 bg-kite-beige/95 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-kite text-3xl text-kite-brown"></i>
+                <h1 class="text-2xl md:text-3xl font-bold text-kite-brown">鸢时漫记</h1>
+            </div>
+            <nav class="hidden md:block">
+                <ul class="flex gap-6 text-lg">
+                    <li><a href="../index.html" class="text-kite-brown hover:text-kite-green transition-colors">首页</a></li>
+                    <li><a href="../index.html#about" class="text-kite-brown hover:text-kite-green transition-colors">关于我们</a></li>
+                    <li><a href="contact.html" class="text-kite-green font-bold">联系我们</a></li>
+                </ul>
+            </nav>
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-xl text-kite-brown" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <!-- 移动端菜单 -->
+            <div class="fixed top-16 left-0 right-0 bg-kite-beige/95 backdrop-blur-md shadow-md py-4 hidden md:hidden" id="mobileMenu">
+                <ul class="flex flex-col gap-4 text-lg px-6">
+                    <li><a href="../index.html" class="hover:text-kite-green transition-colors">首页</a></li>
+                    <li><a href="../index.html#about" class="hover:text-kite-green transition-colors">关于我们</a></li>
+                    <li><a href="contact.html" class="text-kite-green font-bold">联系我们</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- 联系我们主体内容 -->
+    <main class="py-16 px-4 container mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-kite-brown">联系我们</h2>
+            <div class="w-20 h-1 bg-kite-green mx-auto mb-6"></div>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                若您想了解更多纸鸢文化，或咨询合作、体验课程，欢迎与我们联系
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            <!-- 联系信息 -->
+            <div class="card-kite">
+                <h3 class="text-2xl font-bold mb-6 text-kite-green">联系方式</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-map-marker-alt text-2xl text-kite-green mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-lg">地址</h4>
+                            <p class="text-gray-700">山东省威海市环翠区文化西路180号</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-phone text-2xl text-kite-green mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-lg">电话</h4>
+                            <p class="text-gray-700">0513-8888XXXX</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-envelope text-2xl text-kite-green mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-lg">邮箱</h4>
+                            <p class="text-gray-700">contact@yuanshimanji.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-clock text-2xl text-kite-green mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-lg">营业时间</h4>
+                            <p class="text-gray-700">周二至周日 9:00-18:00（周一闭馆）</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 联系表单 -->
+            <div class="card-kite">
+                <h3 class="text-2xl font-bold mb-6 text-kite-green">留言咨询</h3>
+                <form id="contactForm" class="space-y-4">
+                    <div>
+                        <label for="name" class="block mb-2 font-medium">姓名</label>
+                        <input type="text" id="name" class="input-kite" placeholder="请输入您的姓名" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block mb-2 font-medium">电话</label>
+                        <input type="tel" id="phone" class="input-kite" placeholder="请输入您的联系电话" required>
+                    </div>
+                    <div>
+                        <label for="message" class="block mb-2 font-medium">留言内容</label>
+                        <textarea id="message" rows="6" class="input-kite" placeholder="请输入您想咨询的内容" required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-kite-green text-white py-3 rounded-lg font-chinese text-lg hover:bg-kite-green/90 transition-colors">
+                        提交留言 <i class="fa-solid fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-kite-brown text-white py-8 px-4 mt-16">
+        <div class="container mx-auto text-center">
+            <div class="mb-4">
+                <i class="fa-solid fa-kite text-2xl mb-2"></i>
+                <p class="text-lg">纸鸢非遗传承 © 2026 版权所有</p>
+            </div>
+            <p class="text-sm opacity-80">
+                保护非遗 · 传承文化 · 共享美好
+            </p>
+        </div>
+    </footer>
+
+    <!-- JS交互 -->
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 表单提交
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('感谢您的留言！我们会在1-2个工作日内与您联系。');
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
